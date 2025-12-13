@@ -1,1 +1,168 @@
-# password-vault
+# Password Vault
+
+A secure password management application built with a modern monorepo architecture.
+
+## Project Structure
+
+```
+password-vault/
+├── backend/          # Node.js + Express REST API
+│   ├── src/
+│   │   ├── config/   # Database and configuration
+│   │   ├── routes/   # API route handlers
+│   │   └── index.js  # Express server
+│   ├── .env.example  # Environment variables template
+│   └── package.json
+├── frontend/         # Vue 3 + Vite SPA
+│   ├── src/
+│   │   ├── views/    # Page components
+│   │   ├── router/   # Vue Router configuration
+│   │   └── App.vue   # Main app component
+│   ├── index.html
+│   ├── vite.config.js
+│   └── package.json
+└── package.json      # Root workspace configuration
+```
+
+## Features
+
+### Backend
+- REST API built with Express.js
+- Placeholder routes for:
+  - Authentication (`/api/auth`)
+  - Clients management (`/api/clients`)
+  - Resources management (`/api/resources`)
+  - Credentials management (`/api/credentials`)
+  - Audit logging (`/api/audit-log`)
+- MySQL database integration (configured via `.env`)
+- CORS enabled for frontend communication
+
+### Frontend
+- Vue 3 with Composition API
+- Vue Router for navigation
+- Pages:
+  - Login page
+  - Dashboard with stats overview
+  - Client detail page
+- Modern, responsive UI
+- API proxy configured for backend communication
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18+ installed
+- MySQL database (for backend)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd password-vault
+```
+
+2. Install all dependencies:
+```bash
+npm install
+```
+
+This will install dependencies for both backend and frontend workspaces.
+
+### Backend Setup
+
+1. Navigate to the backend folder:
+```bash
+cd backend
+```
+
+2. Copy `.env.example` to `.env` and configure your database:
+```bash
+cp .env.example .env
+```
+
+3. Edit `.env` with your MySQL credentials:
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=your_user
+DB_PASSWORD=your_password
+DB_NAME=password_vault
+```
+
+### Running the Application
+
+#### Development Mode
+
+Run both backend and frontend in development mode:
+```bash
+npm run dev
+```
+
+Or run them separately:
+
+**Backend only:**
+```bash
+npm run dev:backend
+```
+Backend will run on `http://localhost:3000`
+
+**Frontend only:**
+```bash
+npm run dev:frontend
+```
+Frontend will run on `http://localhost:5173`
+
+#### Production Build
+
+Build both projects:
+```bash
+npm run build
+```
+
+Or build them separately:
+```bash
+npm run build:backend
+npm run build:frontend
+```
+
+## API Endpoints
+
+All API endpoints are prefixed with `/api`:
+
+- **Auth**: `/api/auth/login`, `/api/auth/register`, `/api/auth/logout`, `/api/auth/verify`
+- **Clients**: `/api/clients` (GET, POST, PUT, DELETE)
+- **Resources**: `/api/resources` (GET, POST, PUT, DELETE)
+- **Credentials**: `/api/credentials` (GET, POST, PUT, DELETE)
+- **Audit Log**: `/api/audit-log` (GET, POST)
+- **Health Check**: `/health`
+
+## Frontend Routes
+
+- `/` - Redirects to login
+- `/login` - Login page
+- `/dashboard` - Dashboard with stats and client list
+- `/client/:id` - Client detail page with resources and credentials
+
+## Development Notes
+
+- The frontend Vite dev server proxies `/api` requests to the backend (`http://localhost:3000`)
+- Backend uses ES modules (`"type": "module"`)
+- No authentication/authorization is implemented yet - all routes are placeholders
+- No encryption is implemented yet - this is a clean structural foundation
+
+## Next Steps
+
+Future enhancements to be implemented:
+- [ ] Implement proper authentication with JWT
+- [ ] Add password encryption/decryption
+- [ ] Create database schema and migrations
+- [ ] Implement CRUD operations for all entities
+- [ ] Add form validation
+- [ ] Implement proper error handling
+- [ ] Add unit and integration tests
+- [ ] Add API documentation (Swagger/OpenAPI)
+
+## License
+
+ISC
