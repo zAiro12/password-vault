@@ -1,0 +1,26 @@
+{
+  "name": "password-vault-monorepo",
+  "version": "1.0.0",
+  "description": "Password vault application with Node.js backend and Vue 3 frontend",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "build:backend": "npm run build --workspace=backend",
+    "build:frontend": "npm run build --workspace=frontend",
+    "install:all": "npm install && npm install --workspaces"
+  },
+  "keywords": [
+    "password-vault",
+    "security",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "ISC"
+}
