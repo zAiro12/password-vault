@@ -73,6 +73,18 @@ You can also trigger a deployment manually:
 
 ## Troubleshooting
 
+### Seeing README Instead of the Application
+
+If you see the README.md instead of the actual application when visiting the GitHub Pages URL:
+
+1. Go to repository **Settings** → **Pages**
+2. Under "Build and deployment" → "Source", make sure **GitHub Actions** is selected (NOT "Deploy from a branch")
+3. If it was set to "Deploy from a branch", change it to **GitHub Actions**
+4. Wait a few minutes for the change to take effect
+5. Visit the URL again: https://zairo12.github.io/password-vault/
+
+This is the most common issue - when the source is set to deploy from a branch, GitHub Pages will show the README.md from that branch instead of the built application deployed by the workflow.
+
 ### GitHub Pages Not Enabled
 
 If the deployment fails with a pages error:
