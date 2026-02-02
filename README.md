@@ -176,6 +176,15 @@ All API endpoints are prefixed with `/api`:
 - **Development dependencies**: There are known moderate security vulnerabilities in Vite 5.x (esbuild). These only affect the development server and do not impact production builds. To fully resolve, upgrade to Vite 6+ when ready (breaking change).
 - The development server should only be run in trusted environments
 
+## Deployment
+
+The frontend can be automatically deployed to GitHub Pages for testing. See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
+
+**Quick Start:**
+- Push to `main` branch to trigger automatic deployment
+- The UI will be available at: `https://zairo12.github.io/password-vault/`
+- Version tags are created automatically based on `frontend/package.json`
+
 ## Next Steps
 
 Future enhancements to be implemented:
