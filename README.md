@@ -90,6 +90,26 @@ DB_PASSWORD=your_password
 DB_NAME=password_vault
 ```
 
+### Frontend Setup (Optional)
+
+The frontend uses Vite's proxy for API requests in development mode. For production or custom configurations:
+
+1. Navigate to the frontend folder:
+```bash
+cd frontend
+```
+
+2. Copy `.env.example` to `.env` (optional - only needed for custom configuration):
+```bash
+cp .env.example .env
+```
+
+3. Configure environment variables if needed (defaults work for standard setup):
+```env
+VITE_API_BASE_URL=http://localhost:3000
+VITE_ENV=development
+```
+
 ### Running the Application
 
 #### Development Mode
@@ -150,6 +170,11 @@ All API endpoints are prefixed with `/api`:
 - Backend uses ES modules (`"type": "module"`)
 - No authentication/authorization is implemented yet - all routes are placeholders
 - No encryption is implemented yet - this is a clean structural foundation
+
+### Security Notes
+
+- **Development dependencies**: There are known moderate security vulnerabilities in Vite 5.x (esbuild). These only affect the development server and do not impact production builds. To fully resolve, upgrade to Vite 6+ when ready (breaking change).
+- The development server should only be run in trusted environments
 
 ## Next Steps
 
