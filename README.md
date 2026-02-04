@@ -83,8 +83,49 @@ password-vault/
 
 ### Prerequisites
 - Node.js 18+ installed
-- **MySQL 8.0+** database server
+- **MySQL 8.0+ database server** (YOU need to install this - see below)
 - npm or yarn
+
+### ⚠️ IMPORTANTE: Database Hosting
+
+**IL DATABASE NON È INCLUSO!** Devi installare e configurare MySQL sul tuo computer o server.
+
+📖 **Per istruzioni dettagliate sull'installazione di MySQL, consulta:**
+👉 **[DATABASE_SETUP.md](./DATABASE_SETUP.md)** - Guida completa in italiano
+
+**Opzioni:**
+- 💻 **Sviluppo locale:** MySQL sul tuo computer (per iniziare)
+- 🏢 **Server interno:** MySQL su Raspberry Pi o server nella tua rete
+- ☁️ **Cloud:** MySQL su AWS, Google Cloud, Azure, DigitalOcean
+- 🐳 **Docker:** MySQL in container Docker
+
+### Quick Start - MySQL Setup
+
+**Se non hai MySQL installato:**
+
+```bash
+# Ubuntu/Debian
+sudo apt install mysql-server
+
+# macOS
+brew install mysql
+brew services start mysql
+
+# Windows - Scarica da:
+# https://dev.mysql.com/downloads/installer/
+
+# Docker (qualsiasi piattaforma)
+docker run --name password-vault-mysql \
+  -e MYSQL_ROOT_PASSWORD=your_password \
+  -e MYSQL_DATABASE=password_vault \
+  -p 3306:3306 -d mysql:8.0
+```
+
+**Verifica che MySQL sia in esecuzione:**
+```bash
+mysql --version
+mysql -u root -p  # Dovresti riuscire a connetterti
+```
 
 ### Installation
 
@@ -116,9 +157,10 @@ cp .env.example .env
 3. **Edit `.env` with your configuration:**
 ```env
 # Database Configuration (MySQL 8.0+)
-DB_HOST=localhost
+# ⚠️ Assicurati che MySQL sia installato e in esecuzione!
+DB_HOST=localhost              # o IP del tuo server MySQL
 DB_PORT=3306
-DB_USER=your_user
+DB_USER=your_user              # crea un utente dedicato
 DB_PASSWORD=your_secure_password
 DB_NAME=password_vault
 
@@ -140,14 +182,27 @@ JWT_SECRET=your_secure_jwt_secret_here
 - Generate secure random keys for ENCRYPTION_KEY and JWT_SECRET
 - Change admin credentials immediately after first login
 
-4. **Create the database** (if it doesn't exist):
+4. **Create the database and user in MySQL:**
 ```bash
 mysql -u root -p
 ```
 ```sql
+-- Crea il database
 CREATE DATABASE password_vault CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Crea un utente dedicato (RECOMMENDED)
+CREATE USER 'vault_user'@'localhost' IDENTIFIED BY 'your_secure_password';
+
+-- Assegna i permessi
+GRANT ALL PRIVILEGES ON password_vault.* TO 'vault_user'@'localhost';
+FLUSH PRIVILEGES;
+
+-- Verifica
+SHOW DATABASES LIKE 'password_vault';
 EXIT;
 ```
+
+**📖 Per istruzioni più dettagliate:** vedi [DATABASE_SETUP.md](./DATABASE_SETUP.md)
 
 5. **Run database migrations** to create all tables and seed initial data:
 ```bash
@@ -156,9 +211,17 @@ npm run migrate
 
 This will:
 - Create all required tables (users, clients, resources, credentials, user_client_permissions, audit_log)
-- Insert a default admin user (username: `admin`, password: `admin123`)
+- Insert a default admin user (username from ADMIN_DEFAULT_USERNAME, password from ADMIN_DEFAULT_PASSWORD)
 - Add sample clients and resources for testing
 - Track executed migrations to prevent re-running
+
+**✅ Expected output:**
+```
+✓ Connected to database successfully
+✓ Migration 001_initial_schema.sql executed successfully
+✓ Migration 002_seed_initial_data.sql executed successfully
+✓ All migrations completed successfully!
+```
 
 **⚠️ IMPORTANT**: Change the admin password immediately after first login!
 
@@ -261,6 +324,80 @@ All API endpoints are prefixed with `/api`:
 
 - **Development dependencies**: There are known moderate security vulnerabilities in Vite 5.x (esbuild). These only affect the development server and do not impact production builds. To fully resolve, upgrade to Vite 6+ when ready (breaking change).
 - The development server should only be run in trusted environments
+
+## 🚨 Troubleshooting
+
+### Database Connection Issues
+
+**Error: "Can't connect to MySQL server"**
+
+MySQL non è in esecuzione. Avvia il servizio:
+```bash
+# Linux
+sudo systemctl start mysql
+
+# macOS
+brew services start mysql
+
+# Windows
+net start MySQL80
+
+# Docker
+docker start password-vault-mysql
+```
+
+**Error: "Access denied for user"**
+
+Credenziali errate nel file `.env`. Verifica:
+1. Username e password corretti
+2. L'utente esiste in MySQL
+3. L'utente ha i permessi sul database
+
+**Error: "Unknown database 'password_vault'"**
+
+Il database non esiste. Crealo:
+```sql
+CREATE DATABASE password_vault CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+**Error: "Migration failed" durante `npm run migrate`**
+
+1. Verifica che MySQL sia in esecuzione
+2. Verifica le credenziali nel `.env`
+3. Controlla i log di MySQL per errori specifici
+
+### Common Setup Issues
+
+**Node.js version mismatch**
+```bash
+node --version  # Deve essere 18+
+npm install -g n
+sudo n 18
+```
+
+**Port already in use (3000 o 5173)**
+```bash
+# Trova il processo
+lsof -i :3000
+kill -9 <PID>
+
+# O usa porte diverse nel .env
+PORT=3001
+```
+
+**MySQL user doesn't have permissions**
+```sql
+GRANT ALL PRIVILEGES ON password_vault.* TO 'vault_user'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+### Need More Help?
+
+📖 **Guida completa:** [DATABASE_SETUP.md](./DATABASE_SETUP.md)
+- Installazione MySQL passo-passo
+- Configurazione per diversi scenari
+- Troubleshooting avanzato
+- FAQ e best practices
 
 ## Deployment
 
