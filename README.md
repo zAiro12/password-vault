@@ -28,13 +28,22 @@ password-vault/
 
 ### Backend
 - REST API built with Express.js
-- Placeholder routes for:
+- **MySQL 8.0+ database** with complete schema:
+  - Users (with bcrypt password hashing)
+  - Clients (business customers)
+  - Resources (servers, VMs, databases, SaaS)
+  - Credentials (AES-256-CBC encrypted)
+  - User-Client permissions
+  - Audit logging (with JSON metadata)
+- Database migrations with idempotent execution
+- API routes for:
   - Authentication (`/api/auth`)
   - Clients management (`/api/clients`)
   - Resources management (`/api/resources`)
   - Credentials management (`/api/credentials`)
   - Audit logging (`/api/audit-log`)
-- MySQL database integration (configured via `.env`)
+- Connection pooling with automatic retry logic
+- All configuration via `.env` files (no hardcoded secrets)
 - CORS enabled for frontend communication
 
 ### Frontend
@@ -47,11 +56,34 @@ password-vault/
 - Modern, responsive UI
 - API proxy configured for backend communication
 
+## Database
+
+**Database System:** MySQL 8.0 or higher
+
+**Key Features:**
+- UTF-8 MB4 encoding (full Unicode support)
+- InnoDB engine with ACID compliance
+- Foreign key constraints with CASCADE/SET NULL
+- Comprehensive indexes for performance
+- Encrypted credential storage (AES-256-CBC)
+- Password hashing with bcrypt (10 rounds)
+- Audit logging with JSON metadata
+- UTC timezone for all timestamps
+
+**Tables:**
+1. `users` - System users (admin, technician, viewer roles)
+2. `clients` - Business clients
+3. `resources` - IT resources (servers, VMs, databases, SaaS)
+4. `credentials` - Encrypted credentials
+5. `user_client_permissions` - Access control
+6. `audit_log` - Activity tracking
+7. `migrations` - Migration tracking
+
 ## Getting Started
 
 ### Prerequisites
 - Node.js 18+ installed
-- MySQL database (for backend)
+- **MySQL 8.0+** database server
 - npm or yarn
 
 ### Installation
@@ -81,14 +113,32 @@ cd backend
 cp .env.example .env
 ```
 
-3. Edit `.env` with your MySQL credentials:
+3. **Edit `.env` with your configuration:**
 ```env
+# Database Configuration (MySQL 8.0+)
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=your_user
-DB_PASSWORD=your_password
+DB_PASSWORD=your_secure_password
 DB_NAME=password_vault
+
+# Admin User (created during first migration)
+ADMIN_DEFAULT_USERNAME=admin
+ADMIN_DEFAULT_PASSWORD=your_secure_admin_password_here
+ADMIN_DEFAULT_EMAIL=admin@yourdomain.com
+
+# Encryption Key (generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+ENCRYPTION_KEY=your_generated_64_char_hex_key_here
+
+# JWT Secret
+JWT_SECRET=your_secure_jwt_secret_here
 ```
+
+**⚠️ SECURITY NOTES:**
+- Never commit your `.env` file to version control
+- Use strong, unique passwords for all credentials
+- Generate secure random keys for ENCRYPTION_KEY and JWT_SECRET
+- Change admin credentials immediately after first login
 
 4. **Create the database** (if it doesn't exist):
 ```bash
