@@ -1,0 +1,139 @@
+-- ============================================
+-- Password Vault Database Seed Data
+-- Inserts initial admin user and sample clients
+-- ============================================
+
+-- Set default charset
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
+-- ============================================
+-- Insert Default Admin User
+-- Username, email, and password can be configured via environment variables:
+-- - ADMIN_DEFAULT_USERNAME (default: admin)
+-- - ADMIN_DEFAULT_EMAIL (default: admin@passwordvault.local)
+-- - ADMIN_DEFAULT_PASSWORD (default: admin123 - MUST be changed!)
+-- Password hash generated with bcrypt (10 rounds)
+-- ============================================
+-- Note: The actual password hash and user details will be replaced by migrate.js
+-- These are placeholders that will be replaced during execution
+INSERT INTO users (username, email, password_hash, full_name, role, is_active) 
+VALUES 
+  ('ADMIN_USERNAME_PLACEHOLDER', 'ADMIN_EMAIL_PLACEHOLDER', '$2b$10$PLACEHOLDER_HASH', 'System Administrator', 'admin', true);
+
+-- ============================================
+-- Insert Sample Clients for Testing
+-- ============================================
+INSERT INTO clients (name, company_name, description, email, phone, address, is_active, created_by) 
+VALUES
+  (
+    'Acme Corporation',
+    'Acme Corp Ltd.',
+    'Leading technology company specializing in cloud solutions',
+    'contact@acme.com',
+    '+1-555-0100',
+    '123 Tech Street, Silicon Valley, CA 94000',
+    true,
+    1
+  ),
+  (
+    'Global Systems Inc',
+    'Global Systems International',
+    'Enterprise software and IT infrastructure provider',
+    'info@globalsystems.com',
+    '+1-555-0200',
+    '456 Business Ave, New York, NY 10001',
+    true,
+    1
+  ),
+  (
+    'Digital Ventures',
+    'Digital Ventures LLC',
+    'Digital transformation and consulting services',
+    'hello@digitalventures.com',
+    '+1-555-0300',
+    '789 Innovation Blvd, Austin, TX 78701',
+    true,
+    1
+  );
+
+-- ============================================
+-- Insert Sample Resources
+-- ============================================
+INSERT INTO resources (client_id, name, resource_type, description, hostname, ip_address, port, is_active, created_by)
+VALUES
+  (
+    1,
+    'Production Web Server',
+    'server',
+    'Main production web server hosting company website',
+    'web-prod-01.acme.com',
+    '192.168.1.10',
+    443,
+    true,
+    1
+  ),
+  (
+    1,
+    'Database Server',
+    'database',
+    'PostgreSQL database server for production',
+    'db-prod-01.acme.com',
+    '192.168.1.20',
+    5432,
+    true,
+    1
+  ),
+  (
+    2,
+    'Development VM',
+    'vm',
+    'Development environment virtual machine',
+    'dev-vm-01.globalsystems.local',
+    '10.0.0.50',
+    22,
+    true,
+    1
+  ),
+  (
+    3,
+    'AWS Account',
+    'saas',
+    'Company AWS cloud infrastructure account',
+    NULL,
+    NULL,
+    NULL,
+    true,
+    1
+  );
+
+-- ============================================
+-- Grant Admin Full Permissions to All Clients
+-- ============================================
+INSERT INTO user_client_permissions (user_id, client_id, can_view, can_edit, can_delete, granted_by)
+SELECT 
+  1 as user_id,
+  id as client_id,
+  true as can_view,
+  true as can_edit,
+  true as can_delete,
+  1 as granted_by
+FROM clients;
+
+-- ============================================
+-- Insert Initial Audit Log Entry
+-- ============================================
+INSERT INTO audit_log (user_id, action, entity_type, entity_id, details, ip_address)
+VALUES
+  (
+    NULL,
+    'SYSTEM_INIT',
+    'system',
+    NULL,
+    JSON_OBJECT(
+      'message', 'Database initialized with seed data',
+      'version', '1.0.0',
+      'timestamp', UTC_TIMESTAMP()
+    ),
+    '127.0.0.1'
+  );
