@@ -131,7 +131,7 @@ VALUES
     JSON_OBJECT(
       'message', 'Database initialized with seed data',
       'version', '1.0.0',
-      'timestamp', NOW()
+      'timestamp', UTC_TIMESTAMP()
     ),
     '127.0.0.1'
   );

@@ -64,13 +64,6 @@ export async function healthCheck() {
     // Execute simple query
     const [rows] = await connection.query('SELECT 1 as health');
     
-    // Get pool stats
-    const poolStats = {
-      totalConnections: pool.pool._allConnections.length,
-      freeConnections: pool.pool._freeConnections.length,
-      queuedRequests: pool.pool._connectionQueue.length
-    };
-    
     connection.release();
     
     return {
@@ -78,7 +71,6 @@ export async function healthCheck() {
       database: dbConfig.database,
       host: dbConfig.host,
       port: dbConfig.port,
-      pool: poolStats,
       timestamp: new Date().toISOString()
     };
   } catch (error) {
