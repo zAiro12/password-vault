@@ -90,6 +90,42 @@ DB_PASSWORD=your_password
 DB_NAME=password_vault
 ```
 
+4. **Create the database** (if it doesn't exist):
+```bash
+mysql -u root -p
+```
+```sql
+CREATE DATABASE password_vault CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+EXIT;
+```
+
+5. **Run database migrations** to create all tables and seed initial data:
+```bash
+npm run migrate
+```
+
+This will:
+- Create all required tables (users, clients, resources, credentials, user_client_permissions, audit_log)
+- Insert a default admin user (username: `admin`, password: `admin123`)
+- Add sample clients and resources for testing
+- Track executed migrations to prevent re-running
+
+**⚠️ IMPORTANT**: Change the admin password immediately after first login!
+
+6. **Verify the database setup**:
+```bash
+mysql -u your_user -p password_vault -e "SHOW TABLES;"
+```
+
+You should see:
+- audit_log
+- clients
+- credentials
+- migrations
+- resources
+- user_client_permissions
+- users
+
 ### Frontend Setup (Optional)
 
 The frontend uses Vite's proxy for API requests in development mode. For production or custom configurations:
