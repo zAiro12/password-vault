@@ -6,8 +6,15 @@ import clientsRoutes from './routes/clients.js';
 import resourcesRoutes from './routes/resources.js';
 import credentialsRoutes from './routes/credentials.js';
 import auditLogRoutes from './routes/audit-log.js';
+import { printValidationResults } from './utils/env-validator.js';
 
 dotenv.config();
+
+// Validate environment variables before starting the server
+if (!printValidationResults()) {
+  console.error('\n❌ Server cannot start due to missing environment variables.\n');
+  process.exit(1);
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;

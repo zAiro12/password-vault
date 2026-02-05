@@ -11,7 +11,9 @@
     "migrate": "node src/migrations/migrate.js",
     "test": "node test/auth-test.js && node test/clients-test.js",
     "test:auth": "node test/auth-test.js",
-    "test:clients": "node test/clients-test.js"
+    "test:clients": "node test/clients-test.js",
+    "test:integration": "node test/auth-integration-test.js",
+    "validate-env": "node -e \"import('./src/utils/env-validator.js').then(m => m.printValidationResults() || process.exit(1))\""
   },
   "keywords": [
     "password-vault",

@@ -129,10 +129,61 @@ Pinia store managing authentication state:
 
 ### Backend (.env)
 ```env
-JWT_SECRET=<64-char-hex-string>          # Required for JWT signing
+# Required Variables
+JWT_SECRET=<64-char-hex-string>          # Required for JWT signing (min 32 chars recommended)
 JWT_EXPIRES_IN=24h                       # Token expiration time
 BCRYPT_ROUNDS=10                         # bcrypt salt rounds
+ENCRYPTION_KEY=<64-hex-chars>            # Required for credential encryption (exactly 64 hex chars)
+DB_HOST=localhost                        # Database host
+DB_USER=root                             # Database user
+DB_NAME=password_vault                   # Database name
+
+# Optional Variables
+DB_PASSWORD=                             # Database password (defaults to empty)
+DB_PORT=3306                             # Database port
+DB_CONNECTION_LIMIT=10                   # Connection pool limit
+PORT=3000                                # Server port
+NODE_ENV=development                     # Environment (development/production)
 ```
+
+### Environment Variable Validation
+
+The application automatically validates all required environment variables at startup using the `env-validator` utility. If any required variables are missing or invalid, the server will not start and will display a detailed error message.
+
+**Validation checks:**
+- All required variables are present and non-empty
+- `JWT_SECRET` is at least 32 characters (warning if shorter)
+- `ENCRYPTION_KEY` is exactly 64 hexadecimal characters (32 bytes)
+- Production-specific warnings for security issues
+
+**To validate manually:**
+```bash
+cd backend
+npm run validate-env
+```
+
+### GitHub Secrets Integration
+
+For production deployments using GitHub Actions, set the following secrets in your repository:
+
+1. Go to repository **Settings** → **Secrets and variables** → **Actions**
+2. Add the following secrets:
+
+**Required Secrets:**
+- `JWT_SECRET` - Generate with: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+- `ENCRYPTION_KEY` - Generate with: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+- `DB_HOST` - Database host address
+- `DB_USER` - Database username
+- `DB_PASSWORD` - Database password
+- `DB_NAME` - Database name
+
+**Optional Secrets:**
+- `DB_PORT` - Database port (default: 3306)
+- `ADMIN_DEFAULT_USERNAME` - Default admin username for migrations
+- `ADMIN_DEFAULT_PASSWORD` - Default admin password for migrations
+- `ADMIN_DEFAULT_EMAIL` - Default admin email for migrations
+
+These secrets are automatically injected into the environment during GitHub Actions workflows (see `.github/workflows/deploy.yml`).
 
 ### Frontend (.env)
 ```env
@@ -210,6 +261,38 @@ Tests cover:
 - Invalid token handling
 - Password hashing with bcrypt
 - Password validation rules
+
+### Integration Tests
+Run backend integration tests (requires running database and server):
+
+**Step 1: Setup environment**
+```bash
+cd backend
+cp .env.example .env
+# Edit .env with your database credentials
+```
+
+**Step 2: Start the server**
+```bash
+cd backend
+npm start
+```
+
+**Step 3: Run integration tests (in a new terminal)**
+```bash
+cd backend
+node test/auth-integration-test.js
+```
+
+Integration tests cover:
+- Database connection and environment validation
+- Successful login with valid credentials
+- Failed login with incorrect password
+- Failed login with non-existent user
+- Failed login with missing credentials
+- Protected endpoint access with valid token
+- Protected endpoint rejection without token
+- Inactive user login rejection
 
 ### Manual Testing Checklist
 - [ ] Register new user with valid data
