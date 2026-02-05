@@ -7,6 +7,10 @@ dotenv.config();
  * Ensures all required environment variables are set before the application starts
  */
 
+// Constants
+const ENCRYPTION_KEY_HEX_LENGTH = 64; // 32 bytes (256 bits) in hex format
+const ENCRYPTION_KEY_GEN_COMMAND = "node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"";
+
 const REQUIRED_ENV_VARS = {
   // Database configuration
   DB_HOST: 'Database host (e.g., localhost)',
@@ -15,7 +19,7 @@ const REQUIRED_ENV_VARS = {
   
   // Security configuration
   JWT_SECRET: 'JWT secret for token signing (must be a strong, random string)',
-  ENCRYPTION_KEY: 'Encryption key for credential storage (must be 64 hex characters)',
+  ENCRYPTION_KEY: `Encryption key for credential storage (must be ${ENCRYPTION_KEY_HEX_LENGTH} hex characters)`,
 };
 
 const OPTIONAL_ENV_VARS = {
@@ -61,10 +65,12 @@ export function validateEnvironment() {
   // Validate ENCRYPTION_KEY format if present
   if (process.env.ENCRYPTION_KEY) {
     const encryptionKey = process.env.ENCRYPTION_KEY.trim();
-    if (encryptionKey.length !== 64 || !/^[0-9a-fA-F]{64}$/.test(encryptionKey)) {
+    const hexPattern = new RegExp(`^[0-9a-fA-F]{${ENCRYPTION_KEY_HEX_LENGTH}}$`);
+    
+    if (!hexPattern.test(encryptionKey)) {
       missing.push({
         key: 'ENCRYPTION_KEY',
-        description: 'Encryption key must be exactly 64 hexadecimal characters (32 bytes). Generate with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"'
+        description: `Encryption key must be exactly ${ENCRYPTION_KEY_HEX_LENGTH} hexadecimal characters (32 bytes). Generate with: ${ENCRYPTION_KEY_GEN_COMMAND}`
       });
     }
   }

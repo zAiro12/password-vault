@@ -8,6 +8,7 @@
  */
 
 import dotenv from 'dotenv';
+import crypto from 'crypto';
 import pool from '../src/config/database.js';
 import { generateToken } from '../src/utils/jwt.js';
 import bcrypt from 'bcrypt';
@@ -97,9 +98,11 @@ function testEnvironmentVariables() {
  * Setup test user in database
  */
 async function setupTestUser() {
+  // Use crypto.randomUUID() for better uniqueness and avoid race conditions
+  const uniqueId = crypto.randomUUID().split('-')[0];
   const testUser = {
-    username: 'test_user_' + Date.now(),
-    email: 'test' + Date.now() + '@example.com',
+    username: `test_user_${uniqueId}`,
+    email: `test_${uniqueId}@example.com`,
     password: 'TestPassword123!',
     full_name: 'Test User',
     role: 'technician'
