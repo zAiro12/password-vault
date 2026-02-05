@@ -4,9 +4,10 @@ services:
     name: password-vault-backend
     env: node
     region: frankfurt  # Choose your preferred region
-    plan: free  # or 'starter' for paid plan
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && npm start
+    plan: free  # or 'starter' for paid plan ($7/month, no sleep)
+    rootDir: backend  # Important: Set root directory to backend folder
+    buildCommand: npm install
+    startCommand: npm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -14,7 +15,7 @@ services:
       - key: PORT
         value: 3000
       - key: DB_HOST
-        sync: false  # Set in Render dashboard
+        sync: false  # Set in Render dashboard - use external MySQL (PlanetScale, Railway, or your own)
       - key: DB_PORT
         value: 3306
       - key: DB_USER
@@ -22,11 +23,13 @@ services:
       - key: DB_PASSWORD
         sync: false  # Set in Render dashboard (as secret)
       - key: DB_NAME
-        sync: false  # Set in Render dashboard
+        sync: false  # Set in Render dashboard (e.g., password_vault)
       - key: JWT_SECRET
         sync: false  # ⚠️ MUST be set manually and kept consistent across deployments
+                     # Generate with: openssl rand -base64 32
       - key: ENCRYPTION_KEY
         sync: false  # ⚠️ MUST be set manually and kept consistent across deployments
+                     # Generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
       - key: ADMIN_DEFAULT_USERNAME
         value: admin
       - key: ADMIN_DEFAULT_PASSWORD
@@ -34,5 +37,10 @@ services:
       - key: ADMIN_DEFAULT_EMAIL
         value: admin@example.com
 
-  # MySQL Database (optional - use external database or Render's PostgreSQL)
-  # Note: Render doesn't offer MySQL, you'd need to use PostgreSQL or external MySQL
+  # Note about database:
+  # Render.com does NOT offer MySQL in free tier (only PostgreSQL)
+  # Options:
+  #   1. Use external MySQL: PlanetScale (free, MySQL-compatible serverless)
+  #   2. Use external MySQL: Railway.app database only
+  #   3. Use your own MySQL server (Raspberry Pi, VPS, etc.)
+  #   4. Migrate to PostgreSQL (requires code changes)
