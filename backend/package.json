@@ -8,7 +8,10 @@
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
     "build": "echo 'No build step required for backend'",
-    "migrate": "node src/migrations/migrate.js"
+    "migrate": "node src/migrations/migrate.js",
+    "test": "node test/auth-test.js",
+    "test:integration": "node test/auth-integration-test.js",
+    "validate-env": "node -e \"import('./src/utils/env-validator.js').then(m => m.printValidationResults() || process.exit(1))\""
   },
   "keywords": [
     "password-vault",

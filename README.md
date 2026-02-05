@@ -295,6 +295,94 @@ npm run build:backend
 npm run build:frontend
 ```
 
+## Testing
+
+The application includes comprehensive tests to ensure the authentication system works correctly.
+
+### Environment Validation
+
+Before running the server, validate your environment configuration:
+
+```bash
+cd backend
+npm run validate-env
+```
+
+This checks that all required environment variables are set and properly formatted.
+
+**Expected output:**
+```
+✅ Environment Configuration Valid
+════════════════════════════════════════════════════════════
+
+Required variables:
+  ✓ DB_HOST
+  ✓ DB_USER
+  ✓ DB_NAME
+  ✓ JWT_SECRET
+  ✓ ENCRYPTION_KEY
+...
+```
+
+### Unit Tests
+
+Run authentication unit tests (no database required):
+
+```bash
+cd backend
+npm test
+```
+
+Tests include:
+- JWT token generation and verification
+- Invalid token handling  
+- Password hashing with bcrypt
+- Password validation rules
+
+**Expected output:**
+```
+✓ All tests passed!
+Passed: 4
+Failed: 0
+```
+
+### Integration Tests
+
+Run integration tests against a live database (requires running server):
+
+**Step 1:** Ensure database is running and configured in `.env`
+
+**Step 2:** Start the server in one terminal:
+```bash
+cd backend
+npm start
+```
+
+**Step 3:** Run integration tests in another terminal:
+```bash
+cd backend
+npm run test:integration
+```
+
+Tests include:
+- Successful login with valid credentials
+- Failed login with wrong password
+- Failed login with non-existent user
+- Protected endpoint access with valid token
+- Protected endpoint rejection without token
+- Inactive user login rejection
+
+**Expected output:**
+```
+✓ All tests passed!
+Passed: 9
+Failed: 0
+```
+
+For more details on authentication and testing, see:
+- [AUTH_DOCUMENTATION.md](./AUTH_DOCUMENTATION.md) - Complete authentication documentation
+- [GITHUB_SECRETS_GUIDE.md](./GITHUB_SECRETS_GUIDE.md) - GitHub secrets setup guide
+
 ## API Endpoints
 
 All API endpoints are prefixed with `/api`:
