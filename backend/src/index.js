@@ -12,8 +12,30 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// CORS configuration - allow frontend origins
+const allowedOrigins = [
+  'http://localhost:5173',      // Vite dev server
+  'http://127.0.0.1:5173',      // Vite dev server (alternative)
+  'http://localhost:3000',      // Backend server
+  'http://127.0.0.1:3000',      // Backend server (alternative)
+  /^https:\/\/zairo12\.github\.io\/password-vault\/?$/  // GitHub Pages
+];
+
+// Add custom origins from environment variable if provided
+if (process.env.CORS_ORIGINS) {
+  const customOrigins = process.env.CORS_ORIGINS.split(',').map(origin => origin.trim());
+  allowedOrigins.push(...customOrigins);
+}
+
+const corsOptions = {
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
