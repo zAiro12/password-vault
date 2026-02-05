@@ -44,7 +44,7 @@ password-vault/
   - Audit logging (`/api/audit-log`)
 - Connection pooling with automatic retry logic
 - All configuration via `.env` files (no hardcoded secrets)
-- CORS enabled for frontend communication
+- **CORS configured** for frontend communication (see [CORS_SETUP.md](./CORS_SETUP.md))
 
 ### Frontend
 - Vue 3 with Composition API
@@ -326,6 +326,19 @@ All API endpoints are prefixed with `/api`:
 - The development server should only be run in trusted environments
 
 ## 🚨 Troubleshooting
+
+### CORS and Network Errors
+
+**Error: "XMLHttpRequest cannot load... due to access control checks"**
+
+This is a CORS (Cross-Origin Resource Sharing) error. See the complete guide:
+👉 **[CORS_SETUP.md](./CORS_SETUP.md)** - Detailed CORS configuration and troubleshooting
+
+**Quick fix:**
+1. Ensure backend server is running on port 3000
+2. Ensure frontend dev server is running on port 5173
+3. The CORS configuration in `backend/src/index.js` already allows these origins
+4. Clear browser cache and restart both servers
 
 ### Database Connection Issues
 
