@@ -224,6 +224,33 @@ Tests cover:
 - [ ] Logout clears authentication
 - [ ] Page refresh maintains authentication
 
+## Security Considerations
+
+### Current Implementation
+- **Password Hashing**: bcrypt with 10 rounds
+- **JWT Secret**: Requires strong secret from environment
+- **Token Expiration**: 24 hours by default
+- **Active User Check**: Login verifies account is active
+- **No Password Exposure**: API responses never include password hashes
+
+### Known Security Limitations
+
+⚠️ **Rate Limiting Not Implemented**: Authentication endpoints do not have rate limiting, making them vulnerable to brute force attacks. This should be implemented before production deployment.
+
+**Recommendation**: Add rate limiting middleware using packages like `express-rate-limit`:
+```javascript
+import rateLimit from 'express-rate-limit';
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 attempts
+  message: 'Too many login attempts, please try again later'
+});
+
+router.post('/login', authLimiter, login);
+router.post('/register', authLimiter, register);
+```
+
 ## Database Schema
 
 The `users` table already includes all required fields:
@@ -243,11 +270,11 @@ CREATE TABLE users (
 
 ## Future Enhancements
 
-1. **Token Blacklist**: Implement server-side token revocation using Redis
-2. **Refresh Tokens**: Add refresh token mechanism for better UX
-3. **Multi-factor Authentication**: Add 2FA support
-4. **Session Management**: Track active sessions in database
-5. **Rate Limiting**: Prevent brute force attacks on login
+1. **Rate Limiting**: ⚠️ **PRIORITY** - Add rate limiting to prevent brute force attacks (see Security Considerations)
+2. **Token Blacklist**: Implement server-side token revocation using Redis
+3. **Refresh Tokens**: Add refresh token mechanism for better UX
+4. **Multi-factor Authentication**: Add 2FA support
+5. **Session Management**: Track active sessions in database
 6. **Password Reset**: Email-based password recovery
 7. **Account Lockout**: Lock accounts after failed login attempts
 8. **HTTP-Only Cookies**: Store tokens in secure cookies instead of localStorage
