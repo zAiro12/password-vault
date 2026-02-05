@@ -18,6 +18,16 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     /**
+     * Helper method to extract appropriate error message
+     */
+    _extractErrorMessage(error, defaultMsg) {
+      if (error.isNetworkFailure) {
+        return error.userMessage;
+      }
+      return error.response?.data?.error || defaultMsg;
+    },
+
+    /**
      * Initialize auth state from localStorage
      */
     initAuth() {
@@ -53,12 +63,7 @@ export const useAuthStore = defineStore('auth', {
 
         return { success: true };
       } catch (error) {
-        // Prioritize network failure messages
-        if (error.isNetworkFailure) {
-          this.error = error.userMessage;
-        } else {
-          this.error = error.response?.data?.error || 'Login failed';
-        }
+        this.error = this._extractErrorMessage(error, 'Login failed');
         return { success: false, error: this.error };
       } finally {
         this.loading = false;
@@ -87,12 +92,7 @@ export const useAuthStore = defineStore('auth', {
 
         return { success: true };
       } catch (error) {
-        // Prioritize network failure messages
-        if (error.isNetworkFailure) {
-          this.error = error.userMessage;
-        } else {
-          this.error = error.response?.data?.error || 'Registration failed';
-        }
+        this.error = this._extractErrorMessage(error, 'Registration failed');
         return { success: false, error: this.error };
       } finally {
         this.loading = false;
@@ -119,12 +119,7 @@ export const useAuthStore = defineStore('auth', {
 
         return { success: true };
       } catch (error) {
-        // Prioritize network failure messages
-        if (error.isNetworkFailure) {
-          this.error = error.userMessage;
-        } else {
-          this.error = error.response?.data?.error || 'Failed to fetch user';
-        }
+        this.error = this._extractErrorMessage(error, 'Failed to fetch user');
         return { success: false, error: this.error };
       } finally {
         this.loading = false;

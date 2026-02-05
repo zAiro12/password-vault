@@ -173,7 +173,8 @@ This document provides solutions for common issues you may encounter when runnin
 **Solution:**
 1. Check for connection leaks in database pool
 2. Review MySQL connection limits
-3. Monitor Node.js process: `node --max-old-space-size=2048 src/index.js`
+3. Increase Node.js memory limit if needed: `npm run dev` (uses default limits)
+   Or for custom memory allocation: `node --max-old-space-size=2048 backend/src/index.js`
 
 ## Getting Help
 
