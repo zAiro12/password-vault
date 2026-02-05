@@ -39,21 +39,21 @@ This implementation adds comprehensive environment variable validation and GitHu
 
 ### New Files
 
-1. **`backend/src/utils/env-validator.js`** (151 lines)
+1. **`backend/src/utils/env-validator.js`** (189 lines)
    - Validates required environment variables: JWT_SECRET, ENCRYPTION_KEY, DB_HOST, DB_USER, DB_NAME
    - Checks ENCRYPTION_KEY format (must be 64 hex characters)
    - Warns if JWT_SECRET is too short (< 32 chars)
    - Provides production-specific security warnings
    - Safe logging (masks sensitive values)
 
-2. **`backend/test/auth-integration-test.js`** (447 lines)
+2. **`backend/test/auth-integration-test.js`** (486 lines)
    - 9 comprehensive integration tests for authentication
    - Tests database connection and environment validation
    - Tests successful/failed login scenarios
    - Tests protected endpoint access control
    - Uses crypto.randomUUID() for test user uniqueness
 
-3. **`GITHUB_SECRETS_GUIDE.md`** (300+ lines)
+3. **`GITHUB_SECRETS_GUIDE.md`** (259 lines)
    - Complete guide for configuring GitHub secrets
    - Security best practices and warnings
    - Key generation instructions

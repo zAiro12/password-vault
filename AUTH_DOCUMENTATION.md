@@ -159,7 +159,7 @@ The application automatically validates all required environment variables at st
 **To validate manually:**
 ```bash
 cd backend
-node -e "import('./src/utils/env-validator.js').then(m => m.printValidationResults())"
+npm run validate-env
 ```
 
 ### GitHub Secrets Integration

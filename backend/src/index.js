@@ -6,7 +6,7 @@ import clientsRoutes from './routes/clients.js';
 import resourcesRoutes from './routes/resources.js';
 import credentialsRoutes from './routes/credentials.js';
 import auditLogRoutes from './routes/audit-log.js';
-import { validateEnvironment, printValidationResults } from './utils/env-validator.js';
+import { printValidationResults } from './utils/env-validator.js';
 
 dotenv.config();
 

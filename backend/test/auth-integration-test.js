@@ -7,13 +7,9 @@
  * These tests require a running MySQL database with proper configuration
  */
 
-import dotenv from 'dotenv';
 import crypto from 'crypto';
 import pool from '../src/config/database.js';
-import { generateToken } from '../src/utils/jwt.js';
 import bcrypt from 'bcrypt';
-
-dotenv.config();
 
 console.log('═'.repeat(70));
 console.log('Authentication API - Integration Tests');
@@ -238,7 +234,7 @@ async function testFailedLoginUserNotFound() {
   console.log('─'.repeat(70));
   
   try {
-    const nonExistentEmail = 'nonexistent' + Date.now() + '@example.com';
+    const nonExistentEmail = 'nonexistent' + crypto.randomUUID() + '@example.com';
     
     const response = await fetch(`${BASE_URL}/api/auth/login`, {
       method: 'POST',

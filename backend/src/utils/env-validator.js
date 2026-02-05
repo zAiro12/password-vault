@@ -62,12 +62,17 @@ export function validateEnvironment() {
     }
   }
   
-  // Validate ENCRYPTION_KEY format if present
-  if (process.env.ENCRYPTION_KEY) {
+  // Validate ENCRYPTION_KEY format if present and not already missing
+  if (process.env.ENCRYPTION_KEY && process.env.ENCRYPTION_KEY.trim() !== '') {
     const encryptionKey = process.env.ENCRYPTION_KEY.trim();
     const hexPattern = new RegExp(`^[0-9a-fA-F]{${ENCRYPTION_KEY_HEX_LENGTH}}$`);
     
     if (!hexPattern.test(encryptionKey)) {
+      // Remove the entry added by the empty check and replace with format error
+      const emptyCheckIndex = missing.findIndex(m => m.key === 'ENCRYPTION_KEY');
+      if (emptyCheckIndex !== -1) {
+        missing.splice(emptyCheckIndex, 1);
+      }
       missing.push({
         key: 'ENCRYPTION_KEY',
         description: `Encryption key must be exactly ${ENCRYPTION_KEY_HEX_LENGTH} hexadecimal characters (32 bytes). Generate with: ${ENCRYPTION_KEY_GEN_COMMAND}`

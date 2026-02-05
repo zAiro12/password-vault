@@ -96,7 +96,7 @@ To validate environment configuration manually:
 
 ```bash
 cd backend
-node -e "import('./src/utils/env-validator.js').then(m => m.printValidationResults())"
+npm run validate-env
 ```
 
 ### Validation Errors
