@@ -35,7 +35,7 @@ api.interceptors.response.use(
     if (!error.response) {
       // Enhance error with user-friendly message for network issues
       error.isNetworkFailure = true;
-      error.userMessage = 'Cannot connect to server. Please ensure the backend is running on port 3000.';
+      error.userMessage = 'Cannot connect to server. Please check your internet connection.';
       return Promise.reject(error);
     }
     

@@ -1,0 +1,63 @@
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: password-vault-mysql
+    restart: unless-stopped
+    environment:
+      # ⚠️ SECURITY: Change these default values in .env file!
+      # These defaults are for development only and MUST NOT be used in production
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Error: DB_ROOT_PASSWORD not set in .env file}
+      MYSQL_DATABASE: ${DB_NAME:-password_vault}
+      MYSQL_USER: ${DB_USER:-vault_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Error: DB_PASSWORD not set in .env file}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - vault-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: password-vault-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-vault_user}
+      DB_PASSWORD: ${DB_PASSWORD:?Error: DB_PASSWORD not set in .env file}
+      DB_NAME: ${DB_NAME:-password_vault}
+      # ⚠️ SECURITY: These MUST be set in .env file!
+      # Generate JWT_SECRET: openssl rand -base64 32
+      # Generate ENCRYPTION_KEY: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+      JWT_SECRET: ${JWT_SECRET:?Error: JWT_SECRET not set in .env file}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Error: ENCRYPTION_KEY not set in .env file}
+      ADMIN_DEFAULT_USERNAME: ${ADMIN_DEFAULT_USERNAME:-admin}
+      ADMIN_DEFAULT_PASSWORD: ${ADMIN_DEFAULT_PASSWORD:?Error: ADMIN_DEFAULT_PASSWORD not set in .env file}
+      ADMIN_DEFAULT_EMAIL: ${ADMIN_DEFAULT_EMAIL:-admin@example.com}
+      PORT: 3000
+      NODE_ENV: production
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    networks:
+      - vault-network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  vault-network:
+    driver: bridge

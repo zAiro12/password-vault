@@ -502,12 +502,33 @@ FLUSH PRIVILEGES;
 
 ## Deployment
 
-The frontend can be automatically deployed to GitHub Pages for testing. See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
+### ⚠️ IMPORTANTE: Frontend e Backend sono Separati!
 
-**Quick Start:**
+L'applicazione Password Vault è composta da due parti che devono essere deployate separatamente:
+
+#### 📱 Frontend (GitHub Pages)
+- **Cosa:** File statici HTML, CSS, JavaScript (Vue.js)
+- **Dove:** GitHub Pages (automatico)
+- **URL:** `https://zairo12.github.io/password-vault/`
+- **Come:** Push su `main` branch → deploy automatico
+
+#### 🖥️ Backend (Richiede Server)
+- **Cosa:** API Node.js/Express + Database MySQL
+- **Dove:** ⚠️ **NON può essere su GitHub Pages!**
+- **Opzioni:**
+  - 🏠 Raspberry Pi / Server locale (consigliato per uso aziendale interno)
+  - ☁️ Railway.app (gratis fino a $5/mese)
+  - 🎨 Render.com (gratis con limitazioni)
+  - 💰 DigitalOcean / AWS / Azure (professionale)
+
+📖 **Per istruzioni dettagliate sul deploy del backend, consulta:**
+👉 **[BACKEND_DEPLOYMENT_GUIDE.md](./BACKEND_DEPLOYMENT_GUIDE.md)** - Guida completa con tutte le opzioni
+
+**Quick Start Frontend:**
 - Push to `main` branch to trigger automatic deployment
 - The UI will be available at: `https://zairo12.github.io/password-vault/`
 - Version tags are created automatically based on `frontend/package.json`
+- **Nota:** Il frontend su GitHub Pages mostrerà errori di connessione finché non deploy il backend
 
 ## Next Steps
 
