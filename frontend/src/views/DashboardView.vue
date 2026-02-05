@@ -37,8 +37,10 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 const stats = ref({
   clients: 0,
@@ -46,9 +48,8 @@ const stats = ref({
   credentials: 0
 })
 
-const handleLogout = () => {
-  // TODO: Implement actual logout logic
-  console.log('Logging out...')
+const handleLogout = async () => {
+  await authStore.logout()
   router.push('/login')
 }
 </script>
