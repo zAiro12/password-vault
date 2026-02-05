@@ -112,7 +112,7 @@ export async function register(req, res) {
  * POST /api/auth/login
  */
 export async function login(req, res) {
-  const requestId = `login_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const requestId = `login_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   
   try {
     console.log(`[${requestId}] Login attempt started`);

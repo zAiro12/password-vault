@@ -178,10 +178,11 @@ The Swagger documentation is automatically available in production. No additiona
 
 ### Security Considerations
 
-- The Swagger UI is publicly accessible but requires JWT tokens for protected endpoints
+- The Swagger UI is publicly accessible by default but requires JWT tokens for protected endpoints
+- API documentation can be disabled in production by setting `ENABLE_API_DOCS=false` in environment variables
 - In development mode, error responses include debug information
 - In production mode, error details are hidden from clients but logged server-side
-- Consider restricting `/api-docs` and `/swagger` endpoints in production if needed
+- Consider disabling API documentation in production environments for additional security
 
 ## Files Added/Modified
 

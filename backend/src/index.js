@@ -51,19 +51,28 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Custom API Documentation (HTML)
-app.get('/api-docs', (req, res) => {
-  res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.send(generateHtmlDocs());
-});
+// API Documentation - can be disabled in production via ENABLE_API_DOCS=false
+const apiDocsEnabled = process.env.ENABLE_API_DOCS !== 'false';
 
-// API Documentation (JSON format)
-app.get('/api-docs/json', (req, res) => {
-  res.json(apiEndpoints);
-});
+if (apiDocsEnabled) {
+  console.log('📚 API Documentation enabled at /api-docs and /swagger');
+  
+  // Custom API Documentation (HTML)
+  app.get('/api-docs', (req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(generateHtmlDocs());
+  });
 
-// Swagger UI Alternative
-app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  // API Documentation (JSON format)
+  app.get('/api-docs/json', (req, res) => {
+    res.json(apiEndpoints);
+  });
+
+  // Swagger UI
+  app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+} else {
+  console.log('📚 API Documentation disabled (set ENABLE_API_DOCS=true to enable)');
+}
 
 // Health check endpoint
 app.get('/health', (req, res) => {
