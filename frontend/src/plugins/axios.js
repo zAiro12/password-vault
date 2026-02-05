@@ -31,8 +31,16 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    // Check if it's a network/connection error (no response from server)
+    if (!error.response) {
+      // Enhance error with user-friendly message for network issues
+      error.isNetworkFailure = true;
+      error.userMessage = 'Cannot connect to server. Please ensure the backend is running on port 3000.';
+      return Promise.reject(error);
+    }
+    
     // Handle 401 Unauthorized - token expired or invalid
-    if (error.response && error.response.status === 401) {
+    if (error.response.status === 401) {
       // Clear auth data
       localStorage.removeItem('auth_token');
       localStorage.removeItem('auth_user');

@@ -53,7 +53,12 @@ export const useAuthStore = defineStore('auth', {
 
         return { success: true };
       } catch (error) {
-        this.error = error.response?.data?.error || 'Login failed';
+        // Prioritize network failure messages
+        if (error.isNetworkFailure) {
+          this.error = error.userMessage;
+        } else {
+          this.error = error.response?.data?.error || 'Login failed';
+        }
         return { success: false, error: this.error };
       } finally {
         this.loading = false;
@@ -82,7 +87,12 @@ export const useAuthStore = defineStore('auth', {
 
         return { success: true };
       } catch (error) {
-        this.error = error.response?.data?.error || 'Registration failed';
+        // Prioritize network failure messages
+        if (error.isNetworkFailure) {
+          this.error = error.userMessage;
+        } else {
+          this.error = error.response?.data?.error || 'Registration failed';
+        }
         return { success: false, error: this.error };
       } finally {
         this.loading = false;
@@ -109,7 +119,12 @@ export const useAuthStore = defineStore('auth', {
 
         return { success: true };
       } catch (error) {
-        this.error = error.response?.data?.error || 'Failed to fetch user';
+        // Prioritize network failure messages
+        if (error.isNetworkFailure) {
+          this.error = error.userMessage;
+        } else {
+          this.error = error.response?.data?.error || 'Failed to fetch user';
+        }
         return { success: false, error: this.error };
       } finally {
         this.loading = false;
