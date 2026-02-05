@@ -1,14 +1,26 @@
 <template>
-  <div class="login-view">
-    <div class="login-container">
+  <div class="register-view">
+    <div class="register-container">
       <h1>Password Vault</h1>
-      <h2>Login</h2>
+      <h2>Register</h2>
       
       <div v-if="error" class="error-message">
         {{ error }}
       </div>
       
-      <form @submit.prevent="handleLogin" class="login-form">
+      <form @submit.prevent="handleRegister" class="register-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input 
+            type="text" 
+            id="username" 
+            v-model="username" 
+            placeholder="Enter username"
+            required
+            :disabled="loading"
+          />
+        </div>
+        
         <div class="form-group">
           <label for="email">Email</label>
           <input 
@@ -20,24 +32,39 @@
             :disabled="loading"
           />
         </div>
+        
         <div class="form-group">
           <label for="password">Password</label>
           <input 
             type="password" 
             id="password" 
             v-model="password" 
-            placeholder="Enter password"
+            placeholder="Enter password (min 8 chars, 1 number, 1 uppercase)"
+            required
+            :disabled="loading"
+          />
+          <small class="hint">Minimum 8 characters, at least 1 number and 1 uppercase letter</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input 
+            type="password" 
+            id="confirmPassword" 
+            v-model="confirmPassword" 
+            placeholder="Confirm password"
             required
             :disabled="loading"
           />
         </div>
-        <button type="submit" class="btn-login" :disabled="loading">
-          {{ loading ? 'Logging in...' : 'Login' }}
+        
+        <button type="submit" class="btn-register" :disabled="loading">
+          {{ loading ? 'Registering...' : 'Register' }}
         </button>
       </form>
       
-      <div class="register-link">
-        Don't have an account? <router-link to="/register">Register here</router-link>
+      <div class="login-link">
+        Already have an account? <router-link to="/login">Login here</router-link>
       </div>
     </div>
   </div>
@@ -51,16 +78,57 @@ import { useAuthStore } from '../stores/auth'
 const router = useRouter()
 const authStore = useAuthStore()
 
+const username = ref('')
 const email = ref('')
 const password = ref('')
+const confirmPassword = ref('')
 const error = ref(null)
 const loading = ref(false)
 
-const handleLogin = async () => {
+const validateForm = () => {
+  // Check if passwords match
+  if (password.value !== confirmPassword.value) {
+    error.value = 'Passwords do not match'
+    return false
+  }
+  
+  // Validate password strength
+  if (password.value.length < 8) {
+    error.value = 'Password must be at least 8 characters long'
+    return false
+  }
+  
+  if (!/[0-9]/.test(password.value)) {
+    error.value = 'Password must contain at least one number'
+    return false
+  }
+  
+  if (!/[A-Z]/.test(password.value)) {
+    error.value = 'Password must contain at least one uppercase letter'
+    return false
+  }
+  
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email.value)) {
+    error.value = 'Invalid email format'
+    return false
+  }
+  
+  return true
+}
+
+const handleRegister = async () => {
   error.value = null
+  
+  if (!validateForm()) {
+    return
+  }
+  
   loading.value = true
   
-  const result = await authStore.login({
+  const result = await authStore.register({
+    username: username.value,
     email: email.value,
     password: password.value
   })
@@ -68,6 +136,7 @@ const handleLogin = async () => {
   loading.value = false
   
   if (result.success) {
+    // Auto-login after registration
     router.push('/dashboard')
   } else {
     error.value = result.error
@@ -76,21 +145,22 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-.login-view {
+.register-view {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem 1rem;
 }
 
-.login-container {
+.register-container {
   background: white;
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
 }
 
 h1 {
@@ -116,7 +186,7 @@ h2 {
   border: 1px solid #fcc;
 }
 
-.login-form {
+.register-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -152,7 +222,12 @@ input:disabled {
   cursor: not-allowed;
 }
 
-.btn-login {
+.hint {
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.btn-register {
   padding: 0.75rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -164,32 +239,32 @@ input:disabled {
   transition: transform 0.2s;
 }
 
-.btn-login:hover:not(:disabled) {
+.btn-register:hover:not(:disabled) {
   transform: translateY(-2px);
 }
 
-.btn-login:active:not(:disabled) {
+.btn-register:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.btn-login:disabled {
+.btn-register:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.register-link {
+.login-link {
   text-align: center;
   margin-top: 1.5rem;
   color: #666;
 }
 
-.register-link a {
+.login-link a {
   color: #667eea;
   text-decoration: none;
   font-weight: 600;
 }
 
-.register-link a:hover {
+.login-link a:hover {
   text-decoration: underline;
 }
 </style>

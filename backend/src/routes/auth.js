@@ -1,25 +1,19 @@
 import express from 'express';
+import { register, login, getCurrentUser, logout } from '../controllers/authController.js';
+import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// POST /api/auth/login - User login
-router.post('/login', (req, res) => {
-  res.json({ message: 'Login endpoint - to be implemented' });
-});
-
 // POST /api/auth/register - User registration
-router.post('/register', (req, res) => {
-  res.json({ message: 'Register endpoint - to be implemented' });
-});
+router.post('/register', register);
+
+// POST /api/auth/login - User login
+router.post('/login', login);
+
+// GET /api/auth/me - Get current user (protected)
+router.get('/me', authenticateToken, getCurrentUser);
 
 // POST /api/auth/logout - User logout
-router.post('/logout', (req, res) => {
-  res.json({ message: 'Logout endpoint - to be implemented' });
-});
-
-// GET /api/auth/verify - Verify token
-router.get('/verify', (req, res) => {
-  res.json({ message: 'Verify endpoint - to be implemented' });
-});
+router.post('/logout', logout);
 
 export default router;
