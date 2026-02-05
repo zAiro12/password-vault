@@ -357,9 +357,10 @@ GitHub Actions farà automaticamente il re-deploy del frontend con la nuova conf
 
 3. **CORS non configurato**
    - Il backend deve permettere richieste da `https://zairo12.github.io`
-   - Già configurato in `backend/src/index.js`, controlla che sia presente:
+   - Già configurato in `backend/src/index.js`, controlla che siano presenti:
      ```javascript
-     /^https:\/\/zairo12\.github\.io\/password-vault\/?$/
+     'https://zairo12.github.io',  // GitHub Pages (root)
+     /^https:\/\/zairo12\.github\.io\/password-vault\/?$/  // GitHub Pages (repository)
      ```
 
 4. **Backend non raggiungibile**
