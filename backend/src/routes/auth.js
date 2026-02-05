@@ -1,6 +1,6 @@
 import express from 'express';
 import { register, login, getCurrentUser, logout } from '../controllers/authController.js';
-import { authenticateToken } from '../middleware/auth.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ router.post('/register', register);
 router.post('/login', login);
 
 // GET /api/auth/me - Get current user (protected)
-router.get('/me', authenticateToken, getCurrentUser);
+router.get('/me', authenticate, getCurrentUser);
 
 // POST /api/auth/logout - User logout
 router.post('/logout', logout);

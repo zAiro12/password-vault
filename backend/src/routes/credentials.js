@@ -1,30 +1,22 @@
 import express from 'express';
+import { getAllCredentials, getCredentialById, createCredential, updateCredential, deleteCredential } from '../controllers/credentialsController.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // GET /api/credentials - Get all credentials
-router.get('/', (req, res) => {
-  res.json({ message: 'Get all credentials - to be implemented', data: [] });
-});
+router.get('/', authenticate, getAllCredentials);
 
 // GET /api/credentials/:id - Get credential by ID
-router.get('/:id', (req, res) => {
-  res.json({ message: 'Get credential by ID - to be implemented', id: req.params.id });
-});
+router.get('/:id', authenticate, getCredentialById);
 
 // POST /api/credentials - Create new credential
-router.post('/', (req, res) => {
-  res.json({ message: 'Create credential - to be implemented' });
-});
+router.post('/', authenticate, createCredential);
 
 // PUT /api/credentials/:id - Update credential
-router.put('/:id', (req, res) => {
-  res.json({ message: 'Update credential - to be implemented', id: req.params.id });
-});
+router.put('/:id', authenticate, updateCredential);
 
 // DELETE /api/credentials/:id - Delete credential
-router.delete('/:id', (req, res) => {
-  res.json({ message: 'Delete credential - to be implemented', id: req.params.id });
-});
+router.delete('/:id', authenticate, deleteCredential);
 
 export default router;
