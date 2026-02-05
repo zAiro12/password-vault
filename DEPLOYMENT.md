@@ -1,8 +1,14 @@
 # Deploy Pipeline Documentation
 
+## ⚠️ IMPORTANTE: Solo il Frontend è su GitHub Pages!
+
+**GitHub Pages può hostare SOLO il frontend (file statici).** Il backend Node.js/Express deve essere deployato separatamente su un server.
+
+📖 **Per deployare il backend, vedi:** [BACKEND_DEPLOYMENT_GUIDE.md](./BACKEND_DEPLOYMENT_GUIDE.md)
+
 ## Overview
 
-This repository includes an automated deployment pipeline that publishes the frontend UI to GitHub Pages for testing on a real website.
+This repository includes an automated deployment pipeline that publishes the **frontend UI only** to GitHub Pages for testing on a real website. **The backend API is NOT deployed and must be set up separately.**
 
 ## How It Works
 
@@ -125,6 +131,13 @@ base: process.env.NODE_ENV === 'production' ? '/password-vault/' : '/'
 ## Important Notes
 
 - The deployed UI is for **testing purposes**
-- The backend API is not deployed, so API calls will fail in the deployed version
-- For a fully functional application, consider deploying both frontend and backend together
+- ⚠️ **The backend API is NOT deployed to GitHub Pages** - GitHub Pages only supports static files
+- API calls will fail in the deployed version until you deploy the backend separately
+- 📖 **To deploy the backend:** See [BACKEND_DEPLOYMENT_GUIDE.md](./BACKEND_DEPLOYMENT_GUIDE.md) for complete instructions
+- **Backend deployment options:**
+  - 🏠 Raspberry Pi / Local server (recommended for internal company use)
+  - ☁️ Railway.app (free tier available)
+  - 🎨 Render.com (free tier with limitations)
+  - 💰 DigitalOcean / AWS / Azure (professional)
+- After deploying the backend, you'll need to configure the frontend to use the backend URL
 - The deployment uses GitHub Actions built-in tokens, no additional configuration needed
