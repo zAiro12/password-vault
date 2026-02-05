@@ -1,0 +1,38 @@
+services:
+  # Backend API Service
+  - type: web
+    name: password-vault-backend
+    env: node
+    region: frankfurt  # Choose your preferred region
+    plan: free  # or 'starter' for paid plan
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DB_HOST
+        sync: false  # Set in Render dashboard
+      - key: DB_PORT
+        value: 3306
+      - key: DB_USER
+        sync: false  # Set in Render dashboard
+      - key: DB_PASSWORD
+        sync: false  # Set in Render dashboard (as secret)
+      - key: DB_NAME
+        sync: false  # Set in Render dashboard
+      - key: JWT_SECRET
+        generateValue: true  # Auto-generate secure secret
+      - key: ENCRYPTION_KEY
+        generateValue: true  # Auto-generate secure key
+      - key: ADMIN_DEFAULT_USERNAME
+        value: admin
+      - key: ADMIN_DEFAULT_PASSWORD
+        sync: false  # Set in Render dashboard (as secret)
+      - key: ADMIN_DEFAULT_EMAIL
+        value: admin@example.com
+
+  # MySQL Database (optional - use external database or Render's PostgreSQL)
+  # Note: Render doesn't offer MySQL, you'd need to use PostgreSQL or external MySQL

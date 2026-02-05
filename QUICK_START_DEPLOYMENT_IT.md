@@ -80,7 +80,78 @@ Hai 4 opzioni principali:
 
 ### Passo 2: Deploya il Backend
 
-#### Metodo A: Railway.app (Il più veloce) 🚀
+#### Metodo A: 🐳 Docker (RACCOMANDATO - Il più facile!)
+
+**Perfetto per:** Raspberry Pi, VPS, o qualsiasi server con Docker installato
+
+```bash
+# 1. Installa Docker (se non già installato)
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+sudo apt install docker-compose
+
+# 2. Clona il progetto
+git clone https://github.com/zAiro12/password-vault.git
+cd password-vault
+
+# 3. Configura ambiente
+cp .env.docker.example .env
+nano .env  # Modifica le password e le chiavi
+```
+
+Esempio `.env`:
+```env
+DB_ROOT_PASSWORD=MySecureRootPass123!
+DB_NAME=password_vault
+DB_USER=vault_user
+DB_PASSWORD=MySecureDbPass123!
+
+ADMIN_DEFAULT_USERNAME=admin
+ADMIN_DEFAULT_PASSWORD=ChangeAfterFirstLogin!
+ADMIN_DEFAULT_EMAIL=admin@tuaazienda.com
+
+# Genera con: openssl rand -base64 32
+JWT_SECRET=tu_jwt_secret_qui
+
+# Genera con: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+ENCRYPTION_KEY=tua_encryption_key_qui_64_caratteri_hex
+```
+
+```bash
+# 4. Avvia tutto (backend + MySQL)
+docker-compose up -d
+
+# 5. Esegui le migrations (prima volta)
+docker-compose exec backend npm run migrate
+
+# 6. Verifica che funzioni
+curl http://localhost:3000/health
+# Risposta: {"status":"ok"}
+
+# ✅ Fatto! Il backend è attivo su http://localhost:3000
+```
+
+**Gestione:**
+```bash
+# Visualizza logs
+docker-compose logs -f backend
+
+# Stop
+docker-compose down
+
+# Restart
+docker-compose restart
+
+# Backup database
+docker-compose exec mysql mysqldump -u root -p password_vault > backup.sql
+```
+
+**Tempo totale: ~5-10 minuti**
+
+---
+
+#### Metodo B: Railway.app (Cloud - Il più veloce) 🚀
 
 1. Vai su [railway.app](https://railway.app)
 2. Fai login con GitHub
@@ -111,7 +182,7 @@ Hai 4 opzioni principali:
 
 ---
 
-#### Metodo B: Raspberry Pi (Per uso interno aziendale) 🏠
+#### Metodo C: Raspberry Pi (Per uso interno aziendale) 🏠
 
 ```bash
 # 1. Sul Raspberry Pi, installa Node.js
@@ -315,21 +386,23 @@ GitHub Actions farà automaticamente il re-deploy del frontend con la nuova conf
 
 | Opzione | Costo Setup | Costo Mensile | Tempo Setup |
 |---------|-------------|---------------|-------------|
+| Docker (locale) | €0 | €0 | 5-10 min |
 | Railway.app | €0 | €0-5 | 10 min |
 | Render.com | €0 | €0 | 15 min |
-| Raspberry Pi | €30-50 | ~€2 (elettricità) | 60 min |
+| Raspberry Pi (manuale) | €30-50 | ~€2 (elettricità) | 60 min |
 | DigitalOcean | €0 | €6 | 45 min |
 
 ## La Mia Raccomandazione
 
 ### Per Iniziare Subito (Test/Demo):
-👉 **Railway.app** - Deploy in 10 minuti, $5/mese gratis
+👉 **Docker** - Se hai già un server, il modo più veloce (5 minuti)
+👉 **Railway.app** - Se preferisci cloud, deploy in 10 minuti, $5/mese gratis
 
 ### Per Uso Aziendale Serio:
-👉 **Raspberry Pi** - Controllo totale, dati in azienda, zero costi mensili
+👉 **Docker su Raspberry Pi** - Controllo totale, dati in azienda, setup facile, zero costi mensili
 
 ### Per Produzione con Traffico Alto:
-👉 **DigitalOcean** - Affidabile, scalabile, supporto professionale
+👉 **Docker su DigitalOcean/AWS** - Affidabile, scalabile, supporto professionale
 
 ## Hai Bisogno di Aiuto?
 

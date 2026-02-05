@@ -17,7 +17,65 @@ Il backend ha bisogno di:
 
 ## Opzioni di Deployment per il Backend
 
-### 1. 🏠 Raspberry Pi / Server Locale (Consigliato per uso interno)
+### 1. 🐳 Docker (RACCOMANDATO - Più facile e portable)
+
+**Vantaggi:**
+- Setup più semplice e veloce
+- Funziona ovunque (Raspberry Pi, VPS, cloud)
+- Include database MySQL
+- Isolamento e sicurezza
+- Facile da aggiornare
+
+**Setup con Docker Compose:**
+
+```bash
+# 1. Installa Docker e Docker Compose
+# Su Raspberry Pi / Ubuntu:
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+sudo apt install docker-compose
+
+# 2. Clona il repository
+git clone https://github.com/zAiro12/password-vault.git
+cd password-vault
+
+# 3. Configura le variabili d'ambiente
+cp .env.docker.example .env
+nano .env  # Modifica con le tue credenziali
+
+# 4. Avvia i containers
+docker-compose up -d
+
+# 5. Verifica che sia attivo
+docker-compose ps
+curl http://localhost:3000/health
+
+# 6. Esegui le migrations (prima volta)
+docker-compose exec backend npm run migrate
+
+# 7. Visualizza i logs
+docker-compose logs -f backend
+```
+
+**Gestione:**
+```bash
+# Stop
+docker-compose down
+
+# Restart
+docker-compose restart
+
+# Update (dopo pull del codice)
+docker-compose down
+git pull
+docker-compose up -d --build
+
+# Backup database
+docker-compose exec mysql mysqldump -u vault_user -p password_vault > backup.sql
+```
+
+### 2. 🏠 Raspberry Pi / Server Locale (Setup manuale)
 
 **Vantaggi:**
 - Controllo totale
@@ -86,7 +144,7 @@ sudo certbot --nginx -d tuodominio.duckdns.org
 - Porta 80 → Raspberry Pi IP:80
 - Porta 443 → Raspberry Pi IP:443
 
-### 2. ☁️ Railway.app (Gratuito per progetti piccoli)
+### 3. ☁️ Railway.app (Gratuito per progetti piccoli)
 
 **Vantaggi:**
 - Deploy automatico da GitHub
@@ -119,7 +177,7 @@ NODE_ENV=production
 
 **URL backend:** `https://password-vault-backend-production.up.railway.app`
 
-### 3. 🎨 Render.com (Alternativa a Heroku)
+### 4. 🎨 Render.com (Alternativa a Heroku)
 
 **Vantaggi:**
 - Free tier permanente (con limitazioni)
@@ -143,7 +201,7 @@ NODE_ENV=production
 
 **Nota:** Se usi PostgreSQL invece di MySQL, dovrai modificare le query e il driver nel backend.
 
-### 4. 💰 DigitalOcean / AWS / Azure (Professionale)
+### 5. 💰 DigitalOcean / AWS / Azure (Professionale)
 
 **Vantaggi:**
 - Massima flessibilità
