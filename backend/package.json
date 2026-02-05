@@ -13,6 +13,7 @@
     "test:auth": "node test/auth-test.js",
     "test:clients": "node test/clients-test.js",
     "test:integration": "node test/auth-integration-test.js",
+    "test:cors": "node test/cors-config-test.js",
     "validate-env": "node -e \"import('./src/utils/env-validator.js').then(m => m.printValidationResults() || process.exit(1))\""
   },
   "keywords": [
