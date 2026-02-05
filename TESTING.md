@@ -361,9 +361,10 @@ Planned test coverage for upcoming features:
 
 ## Resources
 
-- [Express.js Testing Guide](https://expressjs.com/en/guide/testing.html)
-- [Node.js Testing Best Practices](https://github.com/goldbergyoni/nodebestpractices#-8-testing-best-practices)
-- [MySQL Test Database Setup](https://dev.mysql.com/doc/refman/8.0/en/testing.html)
+- [HTTP API Testing Best Practices](https://github.com/goldbergyoni/nodebestpractices#-8-testing-best-practices)
+- [Node.js Fetch API Documentation](https://nodejs.org/docs/latest-v18.x/api/globals.html#fetch)
+- [MySQL Integration Testing](https://dev.mysql.com/doc/refman/8.0/en/testing.html)
+- [JWT Testing Strategies](https://jwt.io/introduction)
 
 ---
 
