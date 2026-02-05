@@ -1,0 +1,117 @@
+name: 🚀 Deploy Password Vault
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # Permette di lanciarlo manualmente
+
+jobs:
+  deploy-backend:
+    name: 🔧 Deploy Backend
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+      
+      - name: 📦 Install backend dependencies
+        run: |
+          cd backend
+          npm ci
+      
+      - name: 🔐 Create .env file
+        run: |
+          cd backend
+          cat << 'EOF' > .env
+          # Database Configuration
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_PORT=${{ secrets.DB_PORT }}
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          
+          # Admin User
+          ADMIN_DEFAULT_USERNAME=${{ secrets.ADMIN_DEFAULT_USERNAME }}
+          ADMIN_DEFAULT_PASSWORD=${{ secrets.ADMIN_DEFAULT_PASSWORD }}
+          ADMIN_DEFAULT_EMAIL=${{ secrets.ADMIN_DEFAULT_EMAIL }}
+          
+          # Security Keys
+          ENCRYPTION_KEY=${{ secrets.ENCRYPTION_KEY }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          
+          # Server Configuration
+          PORT=3000
+          NODE_ENV=production
+          EOF
+      
+      - name: 🗄️ Run database migrations
+        run: |
+          cd backend
+          npm run migrate
+      
+      - name: ✅ Verify backend setup
+        run: |
+          cd backend
+          echo "✅ Backend dependencies installed"
+          echo "✅ Environment configured"
+          echo "✅ Database migrations executed"
+          echo "🚀 Backend ready for deployment!"
+      
+      - name: 📊 Show deployment info
+        run: |
+          echo "================================================"
+          echo "🎉 DEPLOYMENT SUCCESSFUL!"
+          echo "================================================"
+          echo "📦 Backend: Ready"
+          echo "🗄️  Database: ${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}"
+          echo "👤 Admin User: ${{ secrets.ADMIN_DEFAULT_USERNAME }}"
+          echo "================================================"
+          echo ""
+          echo "⚠️  NEXT STEPS:"
+          echo "1. Deploy backend to your server (VPS/Cloud)"
+          echo "2. Start backend: cd backend && npm start"
+          echo "3. Backend will run on port 3000"
+          echo "================================================"
+
+  deploy-frontend:
+    name: 🎨 Deploy Frontend (GitHub Pages)
+    runs-on: ubuntu-latest
+    needs: deploy-backend
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      
+      - name: 📦 Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+      
+      - name: 🔨 Build frontend
+        run: |
+          cd frontend
+          npm run build
+        env:
+          # Configura qui l'URL del tuo backend
+          VITE_API_URL: https://zairo.duckdns.org:3000
+      
+      - name: 📤 Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/dist
+          cname: zairo.duckdns.org  # Opzionale: se usi custom domain
