@@ -42,3 +42,4 @@ Thumbs.db
 *.local
 *.cache
 .eslintcache
+RENDER_ANSWER.txt
