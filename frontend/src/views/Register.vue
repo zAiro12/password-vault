@@ -53,6 +53,7 @@
               @touchstart="revealMainPass = true"
               @touchend="revealMainPass = false"
               tabindex="-1"
+              :aria-label="revealMainPass ? 'Hiding password' : 'Press to reveal password'"
             >
               <svg v-if="!revealMainPass" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -87,6 +88,7 @@
               @touchstart="revealConfirmPass = true"
               @touchend="revealConfirmPass = false"
               tabindex="-1"
+              :aria-label="revealConfirmPass ? 'Hiding confirm password' : 'Press to reveal confirm password'"
             >
               <svg v-if="!revealConfirmPass" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -297,7 +299,8 @@ input:disabled {
 }
 
 .reveal-toggle:focus {
-  outline: none;
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
 }
 
 .hint {
