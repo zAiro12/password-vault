@@ -1,12 +1,16 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.js';
+import { generateHtmlDocs, apiEndpoints } from './utils/api-docs.js';
 import authRoutes from './routes/auth.js';
 import clientsRoutes from './routes/clients.js';
 import resourcesRoutes from './routes/resources.js';
 import credentialsRoutes from './routes/credentials.js';
 import auditLogRoutes from './routes/audit-log.js';
 import { printValidationResults } from './utils/env-validator.js';
+import { healthCheck } from './config/database.js';
 
 dotenv.config();
 
@@ -47,9 +51,47 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// API Documentation - can be disabled in production via ENABLE_API_DOCS=false
+const apiDocsEnabled = process.env.ENABLE_API_DOCS !== 'false';
+
+if (apiDocsEnabled) {
+  console.log('📚 API Documentation enabled at /api-docs and /swagger');
+  
+  // Custom API Documentation (HTML)
+  app.get('/api-docs', (req, res) => {
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(generateHtmlDocs());
+  });
+
+  // API Documentation (JSON format)
+  app.get('/api-docs/json', (req, res) => {
+    res.json(apiEndpoints);
+  });
+
+  // Swagger UI
+  app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+} else {
+  console.log('📚 API Documentation disabled (set ENABLE_API_DOCS=true to enable)');
+}
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Password Vault API is running' });
+});
+
+// Database health check
+app.get('/health/db', async (req, res) => {
+  try {
+    const dbStatus = await healthCheck();
+    const statusCode = dbStatus.status === 'healthy' ? 200 : 500;
+    res.status(statusCode).json(dbStatus);
+  } catch (error) {
+    res.status(500).json({
+      status: 'unhealthy',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 // API Routes
@@ -64,8 +106,14 @@ app.get('/', (req, res) => {
   res.json({
     message: 'Password Vault API',
     version: '1.0.0',
+    documentation: {
+      interactive: '/api-docs',
+      swagger: '/swagger',
+      json: '/api-docs/json'
+    },
     endpoints: {
       health: '/health',
+      healthDb: '/health/db',
       auth: '/api/auth',
       clients: '/api/clients',
       resources: '/api/resources',
