@@ -25,7 +25,6 @@ The following origins are permitted to access the backend API:
 2. **Production (GitHub Pages):**
    - `https://zairo12.github.io/password-vault` - Main GitHub Pages URL
    - `https://zairo12.github.io/password-vault/` - With trailing slash
-   - `https://*.github.io/password-vault` - Any GitHub.io subdomain (for forks)
 
 ### CORS Options
 
@@ -171,7 +170,7 @@ When deploying to production:
 ```env
 NODE_ENV=production
 PORT=3000
-CORS_ORIGINS=https://zairo12.github.io
+CORS_ORIGINS=https://zairo12.github.io/password-vault
 ```
 
 **Frontend (.env.production):**

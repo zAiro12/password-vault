@@ -18,8 +18,7 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',      // Vite dev server (alternative)
   'http://localhost:3000',      // Backend server
   'http://127.0.0.1:3000',      // Backend server (alternative)
-  /^https:\/\/zairo12\.github\.io\/password-vault\/?$/,  // GitHub Pages (exact match)
-  /^https:\/\/.*\.github\.io\/password-vault\/?$/        // GitHub Pages (any subdomain)
+  /^https:\/\/zairo12\.github\.io\/password-vault\/?$/  // GitHub Pages
 ];
 
 // Add custom origins from environment variable if provided
