@@ -11,28 +11,33 @@ export async function getAllResources(req, res) {
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
     
-    let query = `
-      SELECT r.*, c.name as client_name, u.username as created_by_username 
-      FROM resources r 
-      LEFT JOIN clients c ON r.client_id = c.id 
-      LEFT JOIN users u ON r.created_by = u.id 
-      WHERE r.is_active = true
-    `;
+    let whereClause = 'WHERE r.is_active = true';
     const params = [];
     
     if (client_id) {
-      query += ' AND r.client_id = ?';
+      whereClause += ' AND r.client_id = ?';
       params.push(client_id);
     }
     
     // Get total count
-    const countQuery = query.replace('SELECT r.*, c.name as client_name, u.username as created_by_username', 'SELECT COUNT(*) as total');
+    const countQuery = `
+      SELECT COUNT(*) as total 
+      FROM resources r 
+      ${whereClause}
+    `;
     const [countResult] = await pool.execute(countQuery, params);
     const total = countResult[0].total;
     
-    // Get resources
-    query += ' ORDER BY r.created_at DESC LIMIT ? OFFSET ?';
-    params.push(limit, offset);
+    // Get resources - build query with safe LIMIT/OFFSET
+    const query = `
+      SELECT r.*, c.name as client_name, u.username as created_by_username 
+      FROM resources r 
+      LEFT JOIN clients c ON r.client_id = c.id 
+      LEFT JOIN users u ON r.created_by = u.id 
+      ${whereClause}
+      ORDER BY r.created_at DESC 
+      LIMIT ${limit} OFFSET ${offset}
+    `;
     
     const [resources] = await pool.execute(query, params);
     

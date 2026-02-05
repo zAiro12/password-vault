@@ -16,15 +16,14 @@ export async function getAllClients(req, res) {
     );
     const total = countResult[0].total;
     
-    // Get clients
-    const [clients] = await pool.execute(
+    // Get clients - using query instead of execute for LIMIT/OFFSET
+    const [clients] = await pool.query(
       `SELECT c.*, u.username as created_by_username 
        FROM clients c 
        LEFT JOIN users u ON c.created_by = u.id 
        WHERE c.is_active = true 
        ORDER BY c.created_at DESC 
-       LIMIT ? OFFSET ?`,
-      [limit, offset]
+       LIMIT ${limit} OFFSET ${offset}`
     );
     
     res.json({

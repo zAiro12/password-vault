@@ -12,7 +12,26 @@ export async function getAllCredentials(req, res) {
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
     
-    let query = `
+    let whereClause = 'WHERE cr.is_active = true';
+    const params = [];
+    
+    if (client_id) {
+      whereClause += ' AND r.client_id = ?';
+      params.push(client_id);
+    }
+    
+    // Get total count
+    const countQuery = `
+      SELECT COUNT(*) as total
+      FROM credentials cr 
+      LEFT JOIN resources r ON cr.resource_id = r.id 
+      ${whereClause}
+    `;
+    const [countResult] = await pool.execute(countQuery, params);
+    const total = countResult[0].total;
+    
+    // Get credentials (without decrypted passwords) - build query with safe LIMIT/OFFSET
+    const query = `
       SELECT cr.id, cr.resource_id, cr.credential_type, cr.username, cr.notes, 
              cr.expires_at, cr.last_rotated_at, cr.is_active, cr.created_at, cr.updated_at,
              r.name as resource_name, r.client_id, c.name as client_name, 
@@ -21,26 +40,10 @@ export async function getAllCredentials(req, res) {
       LEFT JOIN resources r ON cr.resource_id = r.id 
       LEFT JOIN clients c ON r.client_id = c.id
       LEFT JOIN users u ON cr.created_by = u.id 
-      WHERE cr.is_active = true
+      ${whereClause}
+      ORDER BY cr.created_at DESC 
+      LIMIT ${limit} OFFSET ${offset}
     `;
-    const params = [];
-    
-    if (client_id) {
-      query += ' AND r.client_id = ?';
-      params.push(client_id);
-    }
-    
-    // Get total count
-    const countQuery = query.replace(
-      'SELECT cr.id, cr.resource_id, cr.credential_type, cr.username, cr.notes, cr.expires_at, cr.last_rotated_at, cr.is_active, cr.created_at, cr.updated_at, r.name as resource_name, r.client_id, c.name as client_name, u.username as created_by_username',
-      'SELECT COUNT(*) as total'
-    );
-    const [countResult] = await pool.execute(countQuery, params);
-    const total = countResult[0].total;
-    
-    // Get credentials (without decrypted passwords)
-    query += ' ORDER BY cr.created_at DESC LIMIT ? OFFSET ?';
-    params.push(limit, offset);
     
     const [credentials] = await pool.execute(query, params);
     
