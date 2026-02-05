@@ -250,7 +250,7 @@ function testCredentialTypeValidation() {
 /**
  * Test 7: Password Rotation Tracking
  */
-function testPasswordRotation() {
+async function testPasswordRotation() {
   console.log('Test 7: Password Rotation Tracking');
   console.log('-'.repeat(60));
   
@@ -265,28 +265,24 @@ function testPasswordRotation() {
     console.log('✓ Initial password encrypted');
     console.log(`  Initial timestamp: ${initialTime.toISOString()}`);
     
-    // Simulate password rotation after some time
-    setTimeout(() => {
-      const rotatedEncrypted = encryptPassword(newPassword);
-      const rotatedTime = new Date();
-      
-      console.log('✓ Password rotated and re-encrypted');
-      console.log(`  Rotation timestamp: ${rotatedTime.toISOString()}`);
-      
-      // Verify rotation timestamp is later
-      if (rotatedTime > initialTime) {
-        console.log('✓ Rotation timestamp is after initial timestamp');
-        passed++;
-      } else {
-        console.log('✗ Rotation timestamp should be after initial timestamp');
-        failed++;
-      }
-    }, 100);
+    // Wait a small amount to ensure timestamp difference
+    await new Promise(resolve => setTimeout(resolve, 10));
     
-    // Wait for timeout to complete
-    setTimeout(() => {
-      runTestSummary();
-    }, 200);
+    // Simulate password rotation
+    const rotatedEncrypted = encryptPassword(newPassword);
+    const rotatedTime = new Date();
+    
+    console.log('✓ Password rotated and re-encrypted');
+    console.log(`  Rotation timestamp: ${rotatedTime.toISOString()}`);
+    
+    // Verify rotation timestamp is later
+    if (rotatedTime > initialTime) {
+      console.log('✓ Rotation timestamp is after initial timestamp');
+      passed++;
+    } else {
+      console.log('✗ Rotation timestamp should be after initial timestamp');
+      failed++;
+    }
   } catch (error) {
     console.log('✗ Test failed:', error.message);
     failed++;
@@ -297,14 +293,15 @@ function testPasswordRotation() {
 /**
  * Run all tests
  */
-function runTests() {
+async function runTests() {
   testPasswordEncryption();
   testPasswordDecryption();
   testMultiplePasswords();
   testInvalidDecryption();
   testKeyGeneration();
   testCredentialTypeValidation();
-  testPasswordRotation();
+  await testPasswordRotation();
+  runTestSummary();
 }
 
 /**
