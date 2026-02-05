@@ -23,7 +23,8 @@ The following origins are permitted to access the backend API:
    - `http://127.0.0.1:3000` - Backend server (alternative)
 
 2. **Production (GitHub Pages):**
-   - `https://zairo12.github.io/password-vault` - Main GitHub Pages URL
+   - `https://zairo12.github.io` - GitHub Pages root URL
+   - `https://zairo12.github.io/password-vault` - Repository-specific GitHub Pages URL
    - `https://zairo12.github.io/password-vault/` - With trailing slash
 
 ### CORS Options
