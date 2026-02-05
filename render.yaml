@@ -24,9 +24,9 @@ services:
       - key: DB_NAME
         sync: false  # Set in Render dashboard
       - key: JWT_SECRET
-        generateValue: true  # Auto-generate secure secret
+        sync: false  # ⚠️ MUST be set manually and kept consistent across deployments
       - key: ENCRYPTION_KEY
-        generateValue: true  # Auto-generate secure key
+        sync: false  # ⚠️ MUST be set manually and kept consistent across deployments
       - key: ADMIN_DEFAULT_USERNAME
         value: admin
       - key: ADMIN_DEFAULT_PASSWORD

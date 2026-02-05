@@ -31,10 +31,14 @@ Il backend ha bisogno di:
 ```bash
 # 1. Installa Docker e Docker Compose
 # Su Raspberry Pi / Ubuntu:
+# IMPORTANTE: Rivedi lo script prima di eseguirlo per sicurezza
 curl -fsSL https://get.docker.com -o get-docker.sh
+cat get-docker.sh  # Rivedi il contenuto
 sudo sh get-docker.sh
 sudo usermod -aG docker $USER
-sudo apt install docker-compose
+
+# Note: Docker Compose V2 è incluso con Docker moderno (usa 'docker compose' senza trattino)
+# Verifica con: docker compose version
 
 # 2. Clona il repository
 git clone https://github.com/zAiro12/password-vault.git
