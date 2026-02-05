@@ -29,11 +29,24 @@ export async function register(req, res) {
       });
     }
     
-    // Validate password strength (minimum 6 characters)
-    if (password.length < 6) {
+    // Validate password strength (minimum 8 characters with complexity)
+    if (password.length < 8) {
       return res.status(400).json({
         error: 'Validation error',
-        message: 'Password must be at least 6 characters long'
+        message: 'Password must be at least 8 characters long'
+      });
+    }
+    
+    // Check for password complexity
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    
+    if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecialChar) {
+      return res.status(400).json({
+        error: 'Validation error',
+        message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
       });
     }
     

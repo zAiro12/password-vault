@@ -8,9 +8,17 @@ import { encryptPassword, decryptPassword } from '../utils/crypto.js';
 export async function getAllCredentials(req, res) {
   try {
     const { client_id } = req.query;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.max(1, Math.min(100, parseInt(req.query.limit) || 10));
     const offset = (page - 1) * limit;
+    
+    // Validate that limit and offset are safe integers
+    if (!Number.isInteger(limit) || !Number.isInteger(offset) || limit < 1 || offset < 0) {
+      return res.status(400).json({
+        error: 'Validation error',
+        message: 'Invalid pagination parameters'
+      });
+    }
     
     let whereClause = 'WHERE cr.is_active = true';
     const params = [];
@@ -30,7 +38,7 @@ export async function getAllCredentials(req, res) {
     const [countResult] = await pool.execute(countQuery, params);
     const total = countResult[0].total;
     
-    // Get credentials (without decrypted passwords) - build query with safe LIMIT/OFFSET
+    // Get credentials (without decrypted passwords) - using string interpolation is safe here since we validated integers above
     const query = `
       SELECT cr.id, cr.resource_id, cr.credential_type, cr.username, cr.notes, 
              cr.expires_at, cr.last_rotated_at, cr.is_active, cr.created_at, cr.updated_at,
@@ -280,8 +288,12 @@ export async function updateCredential(req, res) {
       // Encrypt new password
       try {
         const encryptedData = encryptPassword(password);
-        updates.push('encrypted_password = ?', 'encryption_iv = ?', 'last_rotated_at = ?');
-        values.push(encryptedData.encryptedPassword, encryptedData.iv, new Date());
+        updates.push('encrypted_password = ?');
+        values.push(encryptedData.encryptedPassword);
+        updates.push('encryption_iv = ?');
+        values.push(encryptedData.iv);
+        updates.push('last_rotated_at = ?');
+        values.push(new Date());
       } catch (encryptError) {
         console.error('Encryption error:', encryptError.message);
         return res.status(500).json({

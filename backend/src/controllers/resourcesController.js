@@ -7,9 +7,17 @@ import pool from '../config/database.js';
 export async function getAllResources(req, res) {
   try {
     const { client_id } = req.query;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.max(1, Math.min(100, parseInt(req.query.limit) || 10));
     const offset = (page - 1) * limit;
+    
+    // Validate that limit and offset are safe integers
+    if (!Number.isInteger(limit) || !Number.isInteger(offset) || limit < 1 || offset < 0) {
+      return res.status(400).json({
+        error: 'Validation error',
+        message: 'Invalid pagination parameters'
+      });
+    }
     
     let whereClause = 'WHERE r.is_active = true';
     const params = [];
@@ -28,7 +36,7 @@ export async function getAllResources(req, res) {
     const [countResult] = await pool.execute(countQuery, params);
     const total = countResult[0].total;
     
-    // Get resources - build query with safe LIMIT/OFFSET
+    // Get resources - using string interpolation is safe here since we validated integers above
     const query = `
       SELECT r.*, c.name as client_name, u.username as created_by_username 
       FROM resources r 

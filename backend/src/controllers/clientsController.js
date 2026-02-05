@@ -6,9 +6,17 @@ import pool from '../config/database.js';
  */
 export async function getAllClients(req, res) {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.max(1, Math.min(100, parseInt(req.query.limit) || 10));
     const offset = (page - 1) * limit;
+    
+    // Validate that limit and offset are safe integers
+    if (!Number.isInteger(limit) || !Number.isInteger(offset) || limit < 1 || offset < 0) {
+      return res.status(400).json({
+        error: 'Validation error',
+        message: 'Invalid pagination parameters'
+      });
+    }
     
     // Get total count
     const [countResult] = await pool.execute(
@@ -16,7 +24,7 @@ export async function getAllClients(req, res) {
     );
     const total = countResult[0].total;
     
-    // Get clients - using query instead of execute for LIMIT/OFFSET
+    // Get clients - using string interpolation is safe here since we validated integers above
     const [clients] = await pool.query(
       `SELECT c.*, u.username as created_by_username 
        FROM clients c 

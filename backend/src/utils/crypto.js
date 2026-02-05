@@ -5,6 +5,7 @@ dotenv.config();
 
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 const ALGORITHM = 'aes-256-cbc';
+const ENCRYPTION_KEY_HEX_LENGTH = 64; // 32 bytes (256 bits) in hex format
 
 /**
  * Validate encryption key
@@ -15,8 +16,8 @@ function validateEncryptionKey() {
   }
   
   // Ensure key is 32 bytes (64 hex characters)
-  if (ENCRYPTION_KEY.length !== 64) {
-    throw new Error('ENCRYPTION_KEY must be 64 hex characters (32 bytes)');
+  if (ENCRYPTION_KEY.length !== ENCRYPTION_KEY_HEX_LENGTH) {
+    throw new Error(`ENCRYPTION_KEY must be ${ENCRYPTION_KEY_HEX_LENGTH} hex characters (32 bytes)`);
   }
 }
 
