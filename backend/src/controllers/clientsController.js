@@ -92,13 +92,13 @@ export async function getClientById(req, res) {
  */
 export async function createClient(req, res) {
   try {
-    const { name, company_name, description, email, phone, address } = req.body;
+    const { company_name, description, email, phone, address } = req.body;
     
     // Validate required fields
-    if (!name) {
+    if (!company_name) {
       return res.status(400).json({
         error: 'Validation error',
-        message: 'Name is required'
+        message: 'Company name is required'
       });
     }
     
@@ -113,9 +113,9 @@ export async function createClient(req, res) {
     const created_by = req.user ? req.user.id : null;
     
     const [result] = await pool.execute(
-      `INSERT INTO clients (name, company_name, description, email, phone, address, created_by) 
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [name, company_name || null, description || null, email || null, phone || null, address || null, created_by]
+      `INSERT INTO clients (company_name, description, email, phone, address, created_by) 
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [company_name, description || null, email || null, phone || null, address || null, created_by]
     );
     
     // Fetch the created client
@@ -147,7 +147,7 @@ export async function createClient(req, res) {
 export async function updateClient(req, res) {
   try {
     const { id } = req.params;
-    const { name, company_name, description, email, phone, address } = req.body;
+    const { company_name, description, email, phone, address } = req.body;
     
     // Check if client exists
     const [existingClients] = await pool.execute(
@@ -174,10 +174,6 @@ export async function updateClient(req, res) {
     const updates = [];
     const values = [];
     
-    if (name !== undefined) {
-      updates.push('name = ?');
-      values.push(name);
-    }
     if (company_name !== undefined) {
       updates.push('company_name = ?');
       values.push(company_name);
