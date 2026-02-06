@@ -171,7 +171,7 @@ async function runSeeds() {
     if (insertedCount > 0) {
       log('📝 Default Admin Credentials:', colors.cyan);
       log('   Username: admin', colors.cyan);
-      log('   Password: Admin2026!SecureP@ss', colors.cyan);
+      log('   Password: (set via ADMIN_DEFAULT_PASSWORD env variable)', colors.cyan);
       log('   ⚠️  Change password immediately after first login!', colors.yellow);
       log('');
     }

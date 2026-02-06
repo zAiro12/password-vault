@@ -88,8 +88,12 @@ DB_PASSWORD=your_password
 DB_NAME=password_vault
 
 # Admin User (for seeding)
-ADMIN_DEFAULT_PASSWORD=Admin2026!SecureP@ss
+# ⚠️ SECURITY: Set a strong password and keep it secret!
+# Never commit .env file with real credentials to version control
+ADMIN_DEFAULT_PASSWORD=YourSecurePasswordHere
 ```
+
+⚠️ **IMPORTANT**: Always set `ADMIN_DEFAULT_PASSWORD` in your `.env` file before running seeds. Never use default passwords in production.
 
 ## Default Admin Credentials
 
@@ -97,7 +101,7 @@ After running seeds, you can log in with:
 
 - **Username**: `admin`
 - **Email**: `admin@password-vault.local`
-- **Password**: `Admin2026!SecureP@ss` (or value from `ADMIN_DEFAULT_PASSWORD` env var)
+- **Password**: Value from `ADMIN_DEFAULT_PASSWORD` environment variable
 
 ⚠️ **IMPORTANT**: Change the admin password immediately after first login!
 
