@@ -10,6 +10,9 @@
  * - Uses transactions for safety (rollback on error)
  * - Provides detailed console output
  * - Idempotent (safe to run multiple times)
+ * 
+ * Note: Each migration file should contain a single SQL statement.
+ * For multiple statements, create separate migration files.
  */
 
 import { promises as fs } from 'fs';

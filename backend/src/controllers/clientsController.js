@@ -95,7 +95,8 @@ export async function createClient(req, res) {
     const { company_name, description, email, phone, address } = req.body;
     
     // Validate required fields
-    if (!company_name || !company_name.trim()) {
+    const companyName = company_name?.trim();
+    if (!companyName) {
       return res.status(400).json({
         error: 'Validation error',
         message: 'Company name is required'
@@ -115,7 +116,7 @@ export async function createClient(req, res) {
     const [result] = await pool.execute(
       `INSERT INTO clients (company_name, description, email, phone, address, created_by) 
        VALUES (?, ?, ?, ?, ?, ?)`,
-      [company_name, description || null, email || null, phone || null, address || null, created_by]
+      [companyName, description || null, email || null, phone || null, address || null, created_by]
     );
     
     // Fetch the created client

@@ -259,7 +259,7 @@ Processing: 001_initial_admin.sql
 
 📝 Default Admin Credentials:
    Username: admin
-   Password: Admin2026!SecureP@ss
+   Password: (from ADMIN_DEFAULT_PASSWORD environment variable)
    ⚠️  Change password immediately after first login!
 ```
 

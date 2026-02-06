@@ -73,7 +73,15 @@ async function readSeedFile(filename) {
  */
 async function processSeedSQL(sql) {
   // Generate bcrypt hash for admin password
-  const adminPassword = process.env.ADMIN_DEFAULT_PASSWORD || 'Admin2026!SecureP@ss';
+  const adminPassword = process.env.ADMIN_DEFAULT_PASSWORD;
+  
+  if (!adminPassword) {
+    throw new Error(
+      'Environment variable ADMIN_DEFAULT_PASSWORD must be set before running the seed script. ' +
+      'Set it in your .env file for security.'
+    );
+  }
+  
   const passwordHash = await bcrypt.hash(adminPassword, BCRYPT_ROUNDS);
   
   // Replace placeholder with actual hash

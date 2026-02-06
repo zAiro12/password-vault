@@ -1,6 +1,9 @@
 CREATE TABLE IF NOT EXISTS clients (
   id INT AUTO_INCREMENT PRIMARY KEY,
   company_name VARCHAR(100) NOT NULL,
+  description TEXT,
+  email VARCHAR(100),
+  phone VARCHAR(20),
   address TEXT,
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
