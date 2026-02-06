@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
-import { generateHtmlDocs, apiEndpoints } from './utils/api-docs.js';
+import { apiEndpoints } from './utils/api-docs.js';
 import authRoutes from './routes/auth.js';
 import clientsRoutes from './routes/clients.js';
 import resourcesRoutes from './routes/resources.js';
