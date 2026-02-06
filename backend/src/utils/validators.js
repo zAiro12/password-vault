@@ -32,7 +32,9 @@ export function validateRequiredFields(data, requiredFields) {
   const missing = [];
   
   for (const field of requiredFields) {
-    if (!data[field]) {
+    // Check if field is missing, null, or empty string
+    const value = data[field];
+    if (value === undefined || value === null || value === '') {
       missing.push(field);
     }
   }
@@ -65,7 +67,8 @@ export function validatePasswordStrength(password) {
     errors.push('Password must be at least 8 characters long');
   }
   
-  if (password) {
+  // Only check complexity if password exists
+  if (password && password.length >= 8) {
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
