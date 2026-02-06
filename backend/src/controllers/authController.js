@@ -112,43 +112,24 @@ export async function register(req, res) {
  * POST /api/auth/login
  */
 export async function login(req, res) {
-  const requestId = `login_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
-  
   try {
-    console.log(`[${requestId}] Login attempt started`);
     const { email, password } = req.body;
     
     // Validate required fields
     if (!email || !password) {
-      console.log(`[${requestId}] Validation failed: missing email or password`);
       return res.status(400).json({
         error: 'Validation error',
         message: 'Email and password are required'
       });
     }
     
-    console.log(`[${requestId}] Attempting login for email: ${email}`);
-    
     // Get user from database
-    let users;
-    try {
-      [users] = await pool.execute(
-        'SELECT id, username, email, password_hash, full_name, role, is_active FROM users WHERE email = ?',
-        [email]
-      );
-      console.log(`[${requestId}] Database query executed. Users found: ${users.length}`);
-    } catch (dbError) {
-      console.error(`[${requestId}] Database error:`, {
-        code: dbError.code,
-        errno: dbError.errno,
-        sqlMessage: dbError.sqlMessage,
-        sqlState: dbError.sqlState
-      });
-      throw dbError;
-    }
+    const [users] = await pool.execute(
+      'SELECT id, username, email, password_hash, full_name, role, is_active FROM users WHERE email = ?',
+      [email]
+    );
     
     if (users.length === 0) {
-      console.log(`[${requestId}] No user found with email: ${email}`);
       return res.status(401).json({
         error: 'Authentication failed',
         message: 'Invalid email or password'
@@ -156,11 +137,9 @@ export async function login(req, res) {
     }
     
     const user = users[0];
-    console.log(`[${requestId}] User found - ID: ${user.id}, Username: ${user.username}, Role: ${user.role}, Active: ${user.is_active}`);
     
     // Check if user is active
     if (!user.is_active) {
-      console.log(`[${requestId}] User account is inactive`);
       return res.status(401).json({
         error: 'Authentication failed',
         message: 'User account is inactive'
@@ -168,18 +147,9 @@ export async function login(req, res) {
     }
     
     // Verify password
-    console.log(`[${requestId}] Verifying password...`);
-    let isValidPassword;
-    try {
-      isValidPassword = await bcrypt.compare(password, user.password_hash);
-      console.log(`[${requestId}] Password verification result: ${isValidPassword}`);
-    } catch (bcryptError) {
-      console.error(`[${requestId}] Bcrypt error:`, bcryptError.message);
-      throw bcryptError;
-    }
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
     
     if (!isValidPassword) {
-      console.log(`[${requestId}] Invalid password for user: ${email}`);
       return res.status(401).json({
         error: 'Authentication failed',
         message: 'Invalid email or password'
@@ -187,22 +157,13 @@ export async function login(req, res) {
     }
     
     // Generate JWT token
-    console.log(`[${requestId}] Generating JWT token...`);
-    let token;
-    try {
-      token = generateToken({
-        userId: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role
-      });
-      console.log(`[${requestId}] JWT token generated successfully`);
-    } catch (jwtError) {
-      console.error(`[${requestId}] JWT generation error:`, jwtError.message);
-      throw jwtError;
-    }
+    const token = generateToken({
+      userId: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role
+    });
     
-    console.log(`[${requestId}] Login successful for user: ${user.username}`);
     res.json({
       message: 'Login successful',
       user: {
@@ -215,20 +176,10 @@ export async function login(req, res) {
       token
     });
   } catch (error) {
-    console.error(`[${requestId}] Login error - Type: ${error.constructor.name}`);
-    console.error(`[${requestId}] Error message: ${error.message}`);
-    console.error(`[${requestId}] Error stack:`, error.stack);
-    
+    console.error('Login error:', error.message);
     res.status(500).json({
       error: 'Internal server error',
-      message: 'Failed to login',
-      ...(process.env.NODE_ENV === 'development' && { 
-        debug: {
-          errorType: error.constructor.name,
-          errorMessage: error.message,
-          requestId
-        }
-      })
+      message: 'Failed to login'
     });
   }
 }
