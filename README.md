@@ -44,7 +44,7 @@ password-vault/
   - Audit logging (`/api/audit-log`)
 - Connection pooling with automatic retry logic
 - All configuration via `.env` files (no hardcoded secrets)
-- **CORS configured** for frontend communication (see [CORS_SETUP.md](./CORS_SETUP.md))
+- **CORS configured** for frontend communication (see [CORS_SETUP.md](./docs/CORS_SETUP.md))
 
 ### Frontend
 - Vue 3 with Composition API
@@ -91,7 +91,7 @@ password-vault/
 **IL DATABASE NON È INCLUSO!** Devi installare e configurare MySQL sul tuo computer o server.
 
 📖 **Per istruzioni dettagliate sull'installazione di MySQL, consulta:**
-👉 **[DATABASE_SETUP.md](./DATABASE_SETUP.md)** - Guida completa in italiano
+👉 **[DATABASE_SETUP.md](./docs/DATABASE_SETUP.md)** - Guida completa in italiano
 
 **Opzioni:**
 - 💻 **Sviluppo locale:** MySQL sul tuo computer (per iniziare)
@@ -202,7 +202,7 @@ SHOW DATABASES LIKE 'password_vault';
 EXIT;
 ```
 
-**📖 Per istruzioni più dettagliate:** vedi [DATABASE_SETUP.md](./DATABASE_SETUP.md)
+**📖 Per istruzioni più dettagliate:** vedi [DATABASE_SETUP.md](./docs/DATABASE_SETUP.md)
 
 5. **Run database migrations** to create all tables and seed initial data:
 ```bash
@@ -380,8 +380,8 @@ Failed: 0
 ```
 
 For more details on authentication and testing, see:
-- [AUTH_DOCUMENTATION.md](./AUTH_DOCUMENTATION.md) - Complete authentication documentation
-- [GITHUB_SECRETS_GUIDE.md](./GITHUB_SECRETS_GUIDE.md) - GitHub secrets setup guide
+- [AUTH_DOCUMENTATION.md](./docs/AUTH_DOCUMENTATION.md) - Complete authentication documentation
+- [GITHUB_SECRETS_GUIDE.md](./docs/GITHUB_SECRETS_GUIDE.md) - GitHub secrets setup guide
 
 ## API Endpoints
 
@@ -420,7 +420,7 @@ All API endpoints are prefixed with `/api`:
 **Error: "XMLHttpRequest cannot load... due to access control checks"**
 
 This is a CORS (Cross-Origin Resource Sharing) error. See the complete guide:
-👉 **[CORS_SETUP.md](./CORS_SETUP.md)** - Detailed CORS configuration and troubleshooting
+👉 **[CORS_SETUP.md](./docs/CORS_SETUP.md)** - Detailed CORS configuration and troubleshooting
 
 **Quick fix:**
 1. Ensure backend server is running on port 3000
@@ -494,7 +494,7 @@ FLUSH PRIVILEGES;
 
 ### Need More Help?
 
-📖 **Guida completa:** [DATABASE_SETUP.md](./DATABASE_SETUP.md)
+📖 **Guida completa:** [DATABASE_SETUP.md](./docs/DATABASE_SETUP.md)
 - Installazione MySQL passo-passo
 - Configurazione per diversi scenari
 - Troubleshooting avanzato
@@ -522,7 +522,7 @@ L'applicazione Password Vault è composta da due parti che devono essere deploya
   - 💰 DigitalOcean / AWS / Azure (professionale)
 
 📖 **Per istruzioni dettagliate sul deploy del backend, consulta:**
-👉 **[BACKEND_DEPLOYMENT_GUIDE.md](./BACKEND_DEPLOYMENT_GUIDE.md)** - Guida completa con tutte le opzioni
+👉 **[BACKEND_DEPLOYMENT_GUIDE.md](./docs/BACKEND_DEPLOYMENT_GUIDE.md)** - Guida completa con tutte le opzioni
 
 **Quick Start Frontend:**
 - Push to `main` branch to trigger automatic deployment
@@ -541,6 +541,34 @@ Future enhancements to be implemented:
 - [ ] Implement proper error handling
 - [ ] Add unit and integration tests
 - [ ] Add API documentation (Swagger/OpenAPI)
+
+## 📚 Documentation
+
+Complete documentation is available in the [`docs/`](./docs/) folder:
+
+### Setup & Deployment
+- [DATABASE_SETUP.md](./docs/DATABASE_SETUP.md) - Complete MySQL setup guide (Italian)
+- [BACKEND_DEPLOYMENT_GUIDE.md](./docs/BACKEND_DEPLOYMENT_GUIDE.md) - Backend deployment options
+- [QUICK_START_DEPLOYMENT_IT.md](./docs/QUICK_START_DEPLOYMENT_IT.md) - Quick start deployment guide (Italian)
+- [DEPLOYMENT.md](./docs/DEPLOYMENT.md) - General deployment overview
+- [RENDER_COM_SETUP.md](./docs/RENDER_COM_SETUP.md) - Render.com deployment guide
+- [RENDER_ENV_VARS_CHECKLIST.md](./docs/RENDER_ENV_VARS_CHECKLIST.md) - Environment variables checklist
+- [RENDER_QUICK_REFERENCE.md](./docs/RENDER_QUICK_REFERENCE.md) - Render.com quick reference
+- [GITHUB_PAGES_SETUP.md](./docs/GITHUB_PAGES_SETUP.md) - GitHub Pages setup
+- [GITHUB_SECRETS_GUIDE.md](./docs/GITHUB_SECRETS_GUIDE.md) - GitHub secrets configuration
+
+### Configuration & Security
+- [CORS_SETUP.md](./docs/CORS_SETUP.md) - CORS configuration guide
+- [AUTH_DOCUMENTATION.md](./docs/AUTH_DOCUMENTATION.md) - Authentication system documentation
+- [SECURITY_SUMMARY.md](./docs/SECURITY_SUMMARY.md) - Security features and best practices
+- [SWAGGER_SETUP.md](./docs/SWAGGER_SETUP.md) - API documentation setup
+
+### Development & Testing
+- [API_IMPLEMENTATION.md](./docs/API_IMPLEMENTATION.md) - API implementation details
+- [TESTING.md](./docs/TESTING.md) - Testing guide
+- [TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md) - Common issues and solutions
+- [DEBUGGING_AUTH_IT.md](./docs/DEBUGGING_AUTH_IT.md) - Authentication debugging (Italian)
+- [RISPOSTA_DEPLOYMENT.md](./docs/RISPOSTA_DEPLOYMENT.md) - Deployment Q&A (Italian)
 
 ## License
 

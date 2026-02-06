@@ -1,4 +1,5 @@
 import pool from '../config/database.js';
+import { isValidEmail } from '../utils/validators.js';
 
 /**
  * Get all clients with pagination
@@ -102,14 +103,11 @@ export async function createClient(req, res) {
     }
     
     // Validate email format if provided
-    if (email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        return res.status(400).json({
-          error: 'Validation error',
-          message: 'Invalid email format'
-        });
-      }
+    if (email && !isValidEmail(email)) {
+      return res.status(400).json({
+        error: 'Validation error',
+        message: 'Invalid email format'
+      });
     }
     
     const created_by = req.user ? req.user.id : null;
@@ -165,14 +163,11 @@ export async function updateClient(req, res) {
     }
     
     // Validate email format if provided
-    if (email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        return res.status(400).json({
-          error: 'Validation error',
-          message: 'Invalid email format'
-        });
-      }
+    if (email && !isValidEmail(email)) {
+      return res.status(400).json({
+        error: 'Validation error',
+        message: 'Invalid email format'
+      });
     }
     
     // Build update query dynamically

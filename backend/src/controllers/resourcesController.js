@@ -1,4 +1,5 @@
 import pool from '../config/database.js';
+import { isValidPort, isValidEnum } from '../utils/validators.js';
 
 /**
  * Get all resources with optional client filter
@@ -119,7 +120,7 @@ export async function createResource(req, res) {
     
     // Validate resource_type
     const validTypes = ['server', 'vm', 'database', 'saas', 'other'];
-    if (!validTypes.includes(resource_type)) {
+    if (!isValidEnum(resource_type, validTypes)) {
       return res.status(400).json({
         error: 'Validation error',
         message: 'Invalid resource_type. Must be server, vm, database, saas, or other'
@@ -127,7 +128,7 @@ export async function createResource(req, res) {
     }
     
     // Validate port if provided
-    if (port && (port < 1 || port > 65535)) {
+    if (port && !isValidPort(port)) {
       return res.status(400).json({
         error: 'Validation error',
         message: 'Port must be between 1 and 65535'
@@ -211,7 +212,7 @@ export async function updateResource(req, res) {
     // Validate resource_type if provided
     if (resource_type) {
       const validTypes = ['server', 'vm', 'database', 'saas', 'other'];
-      if (!validTypes.includes(resource_type)) {
+      if (!isValidEnum(resource_type, validTypes)) {
         return res.status(400).json({
           error: 'Validation error',
           message: 'Invalid resource_type. Must be server, vm, database, saas, or other'
@@ -220,7 +221,7 @@ export async function updateResource(req, res) {
     }
     
     // Validate port if provided
-    if (port && (port < 1 || port > 65535)) {
+    if (port && !isValidPort(port)) {
       return res.status(400).json({
         error: 'Validation error',
         message: 'Port must be between 1 and 65535'
