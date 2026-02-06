@@ -1,6 +1,5 @@
 CREATE TABLE IF NOT EXISTS clients (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
   company_name VARCHAR(100) NOT NULL,
   description TEXT,
   email VARCHAR(100),
