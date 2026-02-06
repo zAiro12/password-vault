@@ -95,7 +95,7 @@ export async function createClient(req, res) {
     const { company_name, description, email, phone, address } = req.body;
     
     // Validate required fields
-    if (!company_name) {
+    if (!company_name || !company_name.trim()) {
       return res.status(400).json({
         error: 'Validation error',
         message: 'Company name is required'
