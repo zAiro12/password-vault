@@ -70,11 +70,11 @@ router.post('/register', register);
  *               email:
  *                 type: string
  *                 format: email
- *                 example: lucaairoldi92@gmail.com
+ *                 example: user@example.com
  *               password:
  *                 type: string
  *                 format: password
- *                 example: Admin2026!SecureP@ss
+ *                 example: MySecurePassword123!
  *     responses:
  *       200:
  *         description: Login effettuato con successo

@@ -32,8 +32,8 @@ export const apiEndpoints = {
         auth: false,
         summary: 'Autenticazione utente esistente',
         requestBody: {
-          email: { type: 'string', required: true, example: 'lucaairoldi92@gmail.com' },
-          password: { type: 'string', required: true, example: 'Admin2026!SecureP@ss' }
+          email: { type: 'string', required: true, example: 'user@example.com' },
+          password: { type: 'string', required: true, example: 'MySecurePassword123!' }
         },
         responses: {
           200: { description: 'Login effettuato', returns: ['user', 'token'] },
