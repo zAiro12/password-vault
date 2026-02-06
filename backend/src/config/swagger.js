@@ -15,12 +15,12 @@ const apiDocumentation = {
   },
   servers: [
     {
-      url: 'http://localhost:3000',
-      description: 'Server locale di sviluppo'
-    },
-    {
       url: 'https://password-vault-wqj8.onrender.com',
       description: 'Server di produzione (Render.com)'
+    },
+    {
+      url: 'http://localhost:3000',
+      description: 'Server locale di sviluppo'
     }
   ]
 };
