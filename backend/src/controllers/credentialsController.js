@@ -43,7 +43,7 @@ export async function getAllCredentials(req, res) {
     const query = `
       SELECT cr.id, cr.resource_id, cr.credential_type, cr.username, cr.notes, 
              cr.expires_at, cr.last_rotated_at, cr.is_active, cr.created_at, cr.updated_at,
-             r.name as resource_name, r.client_id, c.name as client_name, 
+             r.name as resource_name, r.client_id, c.company_name as client_name, 
              u.username as created_by_username
       FROM credentials cr 
       LEFT JOIN resources r ON cr.resource_id = r.id 
@@ -90,7 +90,7 @@ export async function getCredentialById(req, res) {
     const { id } = req.params;
     
     const [credentials] = await pool.execute(
-      `SELECT cr.*, r.name as resource_name, r.client_id, c.name as client_name, 
+      `SELECT cr.*, r.name as resource_name, r.client_id, c.company_name as client_name, 
               u.username as created_by_username
        FROM credentials cr 
        LEFT JOIN resources r ON cr.resource_id = r.id 
@@ -209,7 +209,7 @@ export async function createCredential(req, res) {
     const [credentials] = await pool.execute(
       `SELECT cr.id, cr.resource_id, cr.credential_type, cr.username, cr.notes, 
               cr.expires_at, cr.last_rotated_at, cr.is_active, cr.created_at, cr.updated_at,
-              r.name as resource_name, r.client_id, c.name as client_name, 
+              r.name as resource_name, r.client_id, c.company_name as client_name, 
               u.username as created_by_username
        FROM credentials cr 
        LEFT JOIN resources r ON cr.resource_id = r.id 
@@ -334,7 +334,7 @@ export async function updateCredential(req, res) {
     const [credentials] = await pool.execute(
       `SELECT cr.id, cr.resource_id, cr.credential_type, cr.username, cr.notes, 
               cr.expires_at, cr.last_rotated_at, cr.is_active, cr.created_at, cr.updated_at,
-              r.name as resource_name, r.client_id, c.name as client_name, 
+              r.name as resource_name, r.client_id, c.company_name as client_name, 
               u.username as created_by_username
        FROM credentials cr 
        LEFT JOIN resources r ON cr.resource_id = r.id 

@@ -1,0 +1,12 @@
+-- Migration 005: migrations tracking table
+-- 
+-- NOTE:
+-- The `migrations` tracking table is created and managed by the application
+-- code (via `ensureMigrationsTable()`), not by this SQL migration.
+-- 
+-- This file is intentionally left without DDL to avoid duplicating the
+-- `migrations` table definition in both code and SQL, which can cause
+-- confusion and schema drift if they ever diverge.
+--
+-- Keeping this file (as a no-op) preserves the migration numbering and
+-- history without altering the database schema.

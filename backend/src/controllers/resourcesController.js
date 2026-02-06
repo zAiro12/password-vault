@@ -39,7 +39,7 @@ export async function getAllResources(req, res) {
     
     // Get resources - using string interpolation is safe here since we validated integers above
     const query = `
-      SELECT r.*, c.name as client_name, u.username as created_by_username 
+      SELECT r.*, c.company_name as client_name, u.username as created_by_username 
       FROM resources r 
       LEFT JOIN clients c ON r.client_id = c.id 
       LEFT JOIN users u ON r.created_by = u.id 
@@ -77,7 +77,7 @@ export async function getResourceById(req, res) {
     const { id } = req.params;
     
     const [resources] = await pool.execute(
-      `SELECT r.*, c.name as client_name, u.username as created_by_username 
+      `SELECT r.*, c.company_name as client_name, u.username as created_by_username 
        FROM resources r 
        LEFT JOIN clients c ON r.client_id = c.id 
        LEFT JOIN users u ON r.created_by = u.id 
@@ -158,7 +158,7 @@ export async function createResource(req, res) {
     
     // Fetch the created resource
     const [resources] = await pool.execute(
-      `SELECT r.*, c.name as client_name, u.username as created_by_username 
+      `SELECT r.*, c.company_name as client_name, u.username as created_by_username 
        FROM resources r 
        LEFT JOIN clients c ON r.client_id = c.id 
        LEFT JOIN users u ON r.created_by = u.id 
@@ -281,7 +281,7 @@ export async function updateResource(req, res) {
     
     // Fetch the updated resource
     const [resources] = await pool.execute(
-      `SELECT r.*, c.name as client_name, u.username as created_by_username 
+      `SELECT r.*, c.company_name as client_name, u.username as created_by_username 
        FROM resources r 
        LEFT JOIN clients c ON r.client_id = c.id 
        LEFT JOIN users u ON r.created_by = u.id 
