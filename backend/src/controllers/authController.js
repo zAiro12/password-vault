@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import pool from '../config/database.js';
 import { generateToken } from '../utils/jwt.js';
+import { isValidEmail, validatePasswordStrength } from '../utils/validators.js';
 
 const BCRYPT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS || '10');
 
@@ -21,32 +22,19 @@ export async function register(req, res) {
     }
     
     // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!isValidEmail(email)) {
       return res.status(400).json({
         error: 'Validation error',
         message: 'Invalid email format'
       });
     }
     
-    // Validate password strength (minimum 8 characters with complexity)
-    if (password.length < 8) {
+    // Validate password strength
+    const passwordValidation = validatePasswordStrength(password);
+    if (!passwordValidation.valid) {
       return res.status(400).json({
         error: 'Validation error',
-        message: 'Password must be at least 8 characters long'
-      });
-    }
-    
-    // Check for password complexity
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    
-    if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecialChar) {
-      return res.status(400).json({
-        error: 'Validation error',
-        message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+        message: passwordValidation.errors.join('. ')
       });
     }
     

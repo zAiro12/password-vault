@@ -1,5 +1,6 @@
 import pool from '../config/database.js';
 import { encryptPassword, decryptPassword } from '../utils/crypto.js';
+import { isValidEnum } from '../utils/validators.js';
 
 /**
  * Get all credentials with optional client filter
@@ -151,7 +152,7 @@ export async function createCredential(req, res) {
     
     // Validate credential_type
     const validTypes = ['ssh', 'database', 'admin', 'api', 'ftp', 'other'];
-    if (!validTypes.includes(credential_type)) {
+    if (!isValidEnum(credential_type, validTypes)) {
       return res.status(400).json({
         error: 'Validation error',
         message: 'Invalid credential_type. Must be ssh, database, admin, api, ftp, or other'
@@ -264,7 +265,7 @@ export async function updateCredential(req, res) {
     // Validate credential_type if provided
     if (credential_type) {
       const validTypes = ['ssh', 'database', 'admin', 'api', 'ftp', 'other'];
-      if (!validTypes.includes(credential_type)) {
+      if (!isValidEnum(credential_type, validTypes)) {
         return res.status(400).json({
           error: 'Validation error',
           message: 'Invalid credential_type. Must be ssh, database, admin, api, ftp, or other'
