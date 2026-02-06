@@ -1,8 +1,8 @@
-import swaggerJsdoc from 'swagger-jsdoc';
+import { swaggerPaths } from '../docs/swagger-paths.js';
 
 /**
  * Password Vault API Documentation Configuration
- * Custom OpenAPI 3.0 specification for debugging and testing
+ * Centralized OpenAPI 3.0 specification
  */
 
 // Define the base API documentation structure
@@ -15,12 +15,12 @@ const apiDocumentation = {
   },
   servers: [
     {
-      url: 'http://localhost:3000',
-      description: 'Server locale di sviluppo'
-    },
-    {
       url: 'https://password-vault-wqj8.onrender.com',
       description: 'Server di produzione (Render.com)'
+    },
+    {
+      url: 'http://localhost:3000',
+      description: 'Server locale di sviluppo'
     }
   ]
 };
@@ -111,9 +111,10 @@ const endpointTags = [
   { name: 'Health', description: 'Controllo stato del sistema' }
 ];
 
-// Build complete OpenAPI specification
+// Build complete OpenAPI specification with all path definitions
 const openapiSpecification = {
   ...apiDocumentation,
+  paths: swaggerPaths,
   components: {
     securitySchemes: jwtAuthScheme,
     schemas: dataModels
@@ -121,14 +122,4 @@ const openapiSpecification = {
   tags: endpointTags
 };
 
-// Configure swagger-jsdoc to scan route files
-const swaggerConfig = {
-  definition: openapiSpecification,
-  apis: [
-    './src/routes/*.js',
-    './src/controllers/*.js',
-    './src/index.js'
-  ]
-};
-
-export default swaggerJsdoc(swaggerConfig);
+export default openapiSpecification;

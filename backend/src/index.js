@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
-import { generateHtmlDocs, apiEndpoints } from './utils/api-docs.js';
+import { apiEndpoints } from './utils/api-docs.js';
 import authRoutes from './routes/auth.js';
 import clientsRoutes from './routes/clients.js';
 import resourcesRoutes from './routes/resources.js';
@@ -55,21 +55,31 @@ app.use(express.urlencoded({ extended: true }));
 const apiDocsEnabled = process.env.ENABLE_API_DOCS !== 'false';
 
 if (apiDocsEnabled) {
-  console.log('📚 API Documentation enabled at /api-docs and /swagger');
+  console.log('📚 API Documentation enabled at /swagger (Swagger UI)');
   
-  // Custom API Documentation (HTML)
+  // Redirect /api-docs to /swagger (Swagger UI)
   app.get('/api-docs', (req, res) => {
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.send(generateHtmlDocs());
+    res.redirect('/swagger');
   });
 
-  // API Documentation (JSON format)
+  // API Documentation (JSON format) - kept for programmatic access
   app.get('/api-docs/json', (req, res) => {
     res.json(apiEndpoints);
   });
 
-  // Swagger UI
-  app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  // Swagger UI with custom options
+  const swaggerUiOptions = {
+    swaggerOptions: {
+      docExpansion: 'list', // Expand tags by default to show endpoints
+      defaultModelsExpandDepth: 1, // Show models
+      defaultModelExpandDepth: 3, // Expand model details
+      displayRequestDuration: true, // Show request duration
+      filter: true, // Enable search/filter
+      tryItOutEnabled: true // Enable "Try it out" by default
+    }
+  };
+  
+  app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));
 } else {
   console.log('📚 API Documentation disabled (set ENABLE_API_DOCS=true to enable)');
 }
