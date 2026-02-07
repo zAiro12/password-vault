@@ -67,8 +67,8 @@ async function setupTestUser() {
     // Create a test user directly in database
     const passwordHash = await bcrypt.hash('TestPassword123', 10);
     const [result] = await pool.execute(
-      `INSERT INTO users (username, email, password_hash, full_name, role) 
-       VALUES (?, ?, ?, ?, ?)
+      `INSERT INTO users (username, email, password_hash, full_name, role, is_active, is_verified) 
+       VALUES (?, ?, ?, ?, ?, true, true)
        ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)`,
       ['testuser_client_api', 'testuser_client@example.com', passwordHash, 'Test User', 'technician']
     );
