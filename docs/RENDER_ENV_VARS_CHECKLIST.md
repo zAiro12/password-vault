@@ -118,7 +118,7 @@ Esempio: MySecureP@ssw0rd123!
 ```
 Key: ADMIN_DEFAULT_EMAIL
 Value: <tua-email>
-Esempio: admin@tuaazienda.com
+Esempio: lucaairoldi92@gmail.com
 ```
 
 ## 🗄️ Setup Database MySQL Esterno

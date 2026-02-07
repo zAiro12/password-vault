@@ -8,7 +8,7 @@
  * Prerequisites:
  * - Backend server running on http://localhost:3000
  * - Database migrated with the latest schema
- * - Default admin user seeded (username: admin)
+ * - Default admin user seeded (username: lucaairoldi, email: lucaairoldi92@gmail.com)
  * 
  * Run: node test-approval-workflow.js
  */
@@ -56,7 +56,7 @@ async function runTests() {
   console.log('\n1️⃣  Admin Login');
   console.log('-'.repeat(60));
   const loginResult = await apiCall('POST', '/api/auth/login', {
-    email: 'admin@password-vault.local',
+    email: 'lucaairoldi92@gmail.com',
     password: process.env.ADMIN_DEFAULT_PASSWORD || 'Admin123!'
   });
   

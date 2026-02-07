@@ -173,9 +173,9 @@ DB_PASSWORD=your_secure_password
 DB_NAME=password_vault
 
 # Admin User (created during first migration)
-ADMIN_DEFAULT_USERNAME=admin
+ADMIN_DEFAULT_USERNAME=your_admin_username
 ADMIN_DEFAULT_PASSWORD=your_secure_admin_password_here
-ADMIN_DEFAULT_EMAIL=admin@yourdomain.com
+ADMIN_DEFAULT_EMAIL=your_admin@yourdomain.com
 
 # Encryption Key (generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
 ENCRYPTION_KEY=your_generated_64_char_hex_key_here

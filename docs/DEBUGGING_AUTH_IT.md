@@ -229,7 +229,7 @@ curl -X POST https://password-vault-wqj8.onrender.com/api/auth/login \
 ```bash
 curl -X POST https://password-vault-wqj8.onrender.com/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@passwordvault.local","password":"<ADMIN_DEFAULT_PASSWORD>"}' \
+  -d '{"email":"lucaairoldi92@gmail.com","password":"<ADMIN_DEFAULT_PASSWORD>"}' \
   -v
 ```
 
