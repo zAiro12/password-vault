@@ -76,7 +76,12 @@ jobs:
         run: |
           cd frontend
           npm run build
+          # Ensure .nojekyll exists to disable Jekyll processing
+          touch dist/.nojekyll
+          # Verify 404.html exists for SPA fallback
+          test -f dist/404.html || cp dist/index.html dist/404.html
         env:
+          NODE_ENV: production
           VITE_API_URL: https://zairo.duckdns.org:3000
       
       - name: 📤 Deploy to GitHub Pages
