@@ -111,9 +111,9 @@ DB_NAME=password_vault
 DB_USER=vault_user
 DB_PASSWORD=MySecureDbPass123!
 
-ADMIN_DEFAULT_USERNAME=admin
+ADMIN_DEFAULT_USERNAME=lucaairoldi
 ADMIN_DEFAULT_PASSWORD=ChangeAfterFirstLogin!
-ADMIN_DEFAULT_EMAIL=admin@tuaazienda.com
+ADMIN_DEFAULT_EMAIL=lucaairoldi92@gmail.com
 
 # Genera con: openssl rand -base64 32
 JWT_SECRET=tu_jwt_secret_qui
@@ -173,9 +173,9 @@ docker-compose exec mysql mysqldump -u root -p password_vault > backup.sql
    DB_NAME → railway
    JWT_SECRET → (genera con: openssl rand -base64 32)
    ENCRYPTION_KEY → (genera con: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
-   ADMIN_DEFAULT_USERNAME → admin
+   ADMIN_DEFAULT_USERNAME → lucaairoldi
    ADMIN_DEFAULT_PASSWORD → (scegli una password forte)
-   ADMIN_DEFAULT_EMAIL → admin@tuaazienda.com
+   ADMIN_DEFAULT_EMAIL → lucaairoldi92@gmail.com
    PORT → 3000
    NODE_ENV → production
    ```
@@ -231,9 +231,9 @@ DB_NAME=password_vault
 JWT_SECRET=genera_con_openssl_rand_base64_32
 ENCRYPTION_KEY=genera_con_node_randomBytes_32_hex
 
-ADMIN_DEFAULT_USERNAME=admin
+ADMIN_DEFAULT_USERNAME=lucaairoldi
 ADMIN_DEFAULT_PASSWORD=CambiaSubitoDopoPrimoLogin!
-ADMIN_DEFAULT_EMAIL=admin@tuaazienda.com
+ADMIN_DEFAULT_EMAIL=lucaairoldi92@gmail.com
 
 PORT=3000
 NODE_ENV=production

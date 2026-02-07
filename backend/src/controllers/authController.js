@@ -38,44 +38,39 @@ export async function register(req, res) {
       });
     }
     
-    // Validate role if provided
-    const validRoles = ['admin', 'technician', 'viewer'];
+    // Validate role if provided - only allow non-admin roles for self-registration
+    const validRoles = ['technician', 'viewer'];
     const userRole = role || 'technician';
     if (!validRoles.includes(userRole)) {
       return res.status(400).json({
         error: 'Validation error',
-        message: 'Invalid role. Must be admin, technician, or viewer'
+        message: 'Invalid role. Must be technician or viewer. Admin accounts can only be created by existing admins.'
       });
     }
     
     // Hash password
     const password_hash = await bcrypt.hash(password, BCRYPT_ROUNDS);
     
-    // Insert user into database
+    // Insert user into database with is_active=false and is_verified=false
+    // Users need admin approval before they can login
     try {
       const [result] = await pool.execute(
-        'INSERT INTO users (username, email, password_hash, full_name, role) VALUES (?, ?, ?, ?, ?)',
+        'INSERT INTO users (username, email, password_hash, full_name, role, is_active, is_verified) VALUES (?, ?, ?, ?, ?, false, false)',
         [username, email, password_hash, full_name || null, userRole]
       );
       
-      // Generate JWT token
-      const token = generateToken({
-        userId: result.insertId,
-        username,
-        email,
-        role: userRole
-      });
-      
+      // Don't generate token - user needs admin approval first
       res.status(201).json({
-        message: 'User registered successfully',
+        message: 'Registration successful. Your account is pending approval by an administrator. You will be able to login once your account is approved.',
         user: {
           id: result.insertId,
           username,
           email,
           full_name: full_name || null,
-          role: userRole
-        },
-        token
+          role: userRole,
+          is_verified: false,
+          is_active: false
+        }
       });
     } catch (dbError) {
       if (dbError.code === 'ER_DUP_ENTRY') {
@@ -113,7 +108,7 @@ export async function login(req, res) {
     
     // Get user from database
     const [users] = await pool.execute(
-      'SELECT id, username, email, password_hash, full_name, role, is_active FROM users WHERE email = ?',
+      'SELECT id, username, email, password_hash, full_name, role, is_active, is_verified FROM users WHERE email = ?',
       [email]
     );
     
@@ -131,6 +126,14 @@ export async function login(req, res) {
       return res.status(401).json({
         error: 'Authentication failed',
         message: 'User account is inactive'
+      });
+    }
+    
+    // Check if user is verified (approved by admin)
+    if (!user.is_verified) {
+      return res.status(401).json({
+        error: 'Authentication failed',
+        message: 'User account is pending approval by an administrator'
       });
     }
     

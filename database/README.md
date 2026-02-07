@@ -258,7 +258,8 @@ Processing: 001_initial_admin.sql
    Skipped: 0 (already exists)
 
 📝 Default Admin Credentials:
-   Username: admin
+   Username: lucaairoldi
+   Email: lucaairoldi92@gmail.com
    Password: (from ADMIN_DEFAULT_PASSWORD environment variable)
    ⚠️  Change password immediately after first login!
 ```

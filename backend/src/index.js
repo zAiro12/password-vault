@@ -9,6 +9,7 @@ import clientsRoutes from './routes/clients.js';
 import resourcesRoutes from './routes/resources.js';
 import credentialsRoutes from './routes/credentials.js';
 import auditLogRoutes from './routes/audit-log.js';
+import usersRoutes from './routes/users.js';
 import { printValidationResults } from './utils/env-validator.js';
 import { healthCheck } from './config/database.js';
 
@@ -106,6 +107,7 @@ app.get('/health/db', async (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/users', usersRoutes);
 app.use('/api/clients', clientsRoutes);
 app.use('/api/resources', resourcesRoutes);
 app.use('/api/credentials', credentialsRoutes);
@@ -125,6 +127,7 @@ app.get('/', (req, res) => {
       health: '/health',
       healthDb: '/health/db',
       auth: '/api/auth',
+      users: '/api/users',
       clients: '/api/clients',
       resources: '/api/resources',
       credentials: '/api/credentials',

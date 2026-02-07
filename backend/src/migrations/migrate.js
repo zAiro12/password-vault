@@ -108,12 +108,14 @@ async function readMigrationFile(filename) {
  * Generate bcrypt hash for admin password
  */
 async function generateAdminPasswordHash() {
-  // Read default admin password from environment variable
-  const defaultPassword = process.env.ADMIN_DEFAULT_PASSWORD || 'admin123';
+  // Read admin password from environment variable - REQUIRED, no fallback
+  const defaultPassword = process.env.ADMIN_DEFAULT_PASSWORD;
   
-  if (defaultPassword === 'admin123') {
-    console.warn('⚠️  WARNING: Using default admin password "admin123"');
-    console.warn('⚠️  Set ADMIN_DEFAULT_PASSWORD in .env for better security\n');
+  if (!defaultPassword) {
+    throw new Error(
+      'Environment variable ADMIN_DEFAULT_PASSWORD must be set before running migrations. ' +
+      'Set it in your .env file for security.'
+    );
   }
   
   console.log('Generating bcrypt hash for admin password...');
@@ -130,8 +132,17 @@ async function processMigrationSQL(sql, filename) {
   // For seed data, replace admin user placeholders
   if (filename.includes('seed') || filename.includes('002')) {
     const adminHash = await generateAdminPasswordHash();
-    const adminUsername = process.env.ADMIN_DEFAULT_USERNAME || 'admin';
-    const adminEmail = process.env.ADMIN_DEFAULT_EMAIL || 'admin@passwordvault.local';
+    
+    // All credentials must come from environment variables - no fallback defaults
+    const adminUsername = process.env.ADMIN_DEFAULT_USERNAME;
+    const adminEmail = process.env.ADMIN_DEFAULT_EMAIL;
+    
+    if (!adminUsername || !adminEmail) {
+      throw new Error(
+        'Environment variables ADMIN_DEFAULT_USERNAME and ADMIN_DEFAULT_EMAIL must be set. ' +
+        'Set them in your .env file for security.'
+      );
+    }
     
     sql = sql.replace('$2b$10$PLACEHOLDER_HASH', adminHash);
     sql = sql.replace('ADMIN_USERNAME_PLACEHOLDER', adminUsername);
@@ -250,12 +261,12 @@ function displayUsage() {
   console.log('  DB_USER                    Database user (default: root)');
   console.log('  DB_PASSWORD                Database password');
   console.log('  DB_NAME                    Database name (default: password_vault)');
-  console.log('  ADMIN_DEFAULT_USERNAME     Admin username (default: admin)');
-  console.log('  ADMIN_DEFAULT_EMAIL        Admin email (default: admin@passwordvault.local)');
-  console.log('  ADMIN_DEFAULT_PASSWORD     Admin password (default: admin123)');
+  console.log('  ADMIN_DEFAULT_USERNAME     Admin username (REQUIRED)');
+  console.log('  ADMIN_DEFAULT_EMAIL        Admin email (REQUIRED)');
+  console.log('  ADMIN_DEFAULT_PASSWORD     Admin password (REQUIRED)');
   console.log();
-  console.log('⚠️  SECURITY: Set ADMIN_DEFAULT_PASSWORD in .env before first migration!');
-  console.log('⚠️  Change admin credentials immediately after first login!');
+  console.log('⚠️  SECURITY: All admin credentials must be set in .env file!');
+  console.log('⚠️  No default values - migration will fail if not set.');
   console.log('='.repeat(60) + '\n');
 }
 

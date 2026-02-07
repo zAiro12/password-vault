@@ -211,9 +211,9 @@ DB_PASSWORD=your_secure_password
 DB_NAME=password_vault
 
 # Admin User (primo accesso)
-ADMIN_DEFAULT_USERNAME=admin
+ADMIN_DEFAULT_USERNAME=lucaairoldi
 ADMIN_DEFAULT_PASSWORD=ChangeMe123!
-ADMIN_DEFAULT_EMAIL=admin@yourdomain.com
+ADMIN_DEFAULT_EMAIL=lucaairoldi92@gmail.com
 
 # Genera queste chiavi!
 ENCRYPTION_KEY=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")

@@ -182,8 +182,12 @@ const handleRegister = async () => {
   loading.value = false
   
   if (result.success) {
-    // Auto-login after registration
-    router.push('/dashboard')
+    // Show success message - user needs admin approval before login
+    error.value = null
+    // Display success message to the user
+    alert('Registration successful! Your account is pending approval by an administrator. You will be able to login once your account is approved.')
+    // Redirect to login page
+    router.push('/login')
   } else {
     error.value = result.error
   }

@@ -159,3 +159,91 @@ The authentication system is **functionally complete** and implements industry-s
 **Reviewed By**: GitHub Copilot AI Agent  
 **Date**: 2026-02-05  
 **Version**: 1.0
+
+---
+
+# Security Summary Update - User Approval Workflow
+
+**Date**: 2026-02-07  
+**Version**: 1.1
+
+## Changes in This Update
+
+Added user registration approval workflow with admin-only user management endpoints.
+
+## New Security Features Implemented
+
+### ✅ Enhanced Access Control
+1. **Registration Restrictions**
+   - Self-registration limited to `technician` and `viewer` roles only
+   - Admin role can only be assigned by existing admins
+   - Registration does not provide immediate access (requires approval)
+
+2. **Account Status Validation**
+   - Login checks both `is_active` and `is_verified` fields
+   - Authentication middleware validates both fields on every request
+   - Prevents unapproved users from accessing the system
+
+3. **Admin Protection**
+   - Admins cannot deactivate their own accounts
+   - Prevents accidental self-lockout
+
+4. **Audit Trail**
+   - Tracks which admin approved each user (`approved_by` field)
+   - Records approval timestamp (`approved_at` field)
+
+5. **User Management API Security**
+   - All user management endpoints require authentication
+   - All user management endpoints require admin role authorization
+   - Frontend router guards prevent unauthorized access
+
+## New CodeQL Findings
+
+### Missing Rate Limiting on User Management Routes
+- **Severity**: Medium
+- **Type**: js/missing-rate-limiting
+- **Locations**: 8 instances in `backend/src/routes/users.js`
+  - Lines 16, 20, 23, 26, 29, 32, 35, 38
+
+**Status**: DOCUMENTED - Same as existing auth routes. Rate limiting should be implemented system-wide, not per-endpoint. Added to future enhancements documentation.
+
+## No New Critical Vulnerabilities
+
+- ✅ No SQL injection vulnerabilities (using parameterized queries)
+- ✅ No authentication bypass vulnerabilities
+- ✅ No privilege escalation vulnerabilities
+- ✅ No sensitive data exposure in responses
+- ✅ Password hashing properly implemented with bcrypt
+
+## Updated Recommendations
+
+### High Priority (Unchanged)
+1. ⚠️ **Rate Limiting**: Add system-wide rate limiting to ALL API endpoints
+   - Affects: Authentication endpoints + User management endpoints
+   - Recommended: express-rate-limit package
+   - Target: Before production deployment
+
+### New Recommendations - Medium Priority
+2. **Audit Logging**: Add audit logging for user management operations
+   - Log user approvals, rejections, deactivations, reactivations
+   - Track admin actions for compliance
+
+3. **Email Verification**: Add email verification to registration process
+   - Ensures users control the email addresses they provide
+   - Reduces spam registrations
+
+## Security Status Update
+
+**Overall Security Status**: ⚠️ **SUITABLE FOR DEVELOPMENT** - Requires rate limiting before production.
+
+### New Features Security Assessment
+- ✅ Authentication and authorization properly implemented
+- ✅ Role-based access control working correctly
+- ✅ No privilege escalation vulnerabilities
+- ⚠️ Rate limiting required (system-wide concern)
+
+---
+
+**Updated By**: GitHub Copilot AI Agent  
+**Date**: 2026-02-07  
+**Version**: 1.1

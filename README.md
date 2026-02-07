@@ -29,15 +29,21 @@ password-vault/
 ### Backend
 - REST API built with Express.js
 - **MySQL 8.0+ database** with complete schema:
-  - Users (with bcrypt password hashing)
+  - Users (with bcrypt password hashing and admin approval workflow)
   - Clients (business customers)
   - Resources (servers, VMs, databases, SaaS)
   - Credentials (AES-256-CBC encrypted)
   - User-Client permissions
   - Audit logging (with JSON metadata)
+- **User Registration Approval Workflow**:
+  - New users can self-register but require admin approval
+  - Admins can approve, reject, or directly create users
+  - User status tracking (active, inactive, verified)
+  - See [USER_APPROVAL_WORKFLOW.md](./docs/USER_APPROVAL_WORKFLOW.md) for details
 - Database migrations with idempotent execution
 - API routes for:
   - Authentication (`/api/auth`)
+  - User management (`/api/users`) - Admin only
   - Clients management (`/api/clients`)
   - Resources management (`/api/resources`)
   - Credentials management (`/api/credentials`)
@@ -48,11 +54,13 @@ password-vault/
 
 ### Frontend
 - Vue 3 with Composition API
-- Vue Router for navigation
+- Vue Router for navigation with role-based access control
 - Pages:
   - Login page
+  - Registration page (with admin approval flow)
   - Dashboard with stats overview
   - Client detail page
+  - User Management page (Admin only)
 - Modern, responsive UI
 - API proxy configured for backend communication
 
@@ -165,9 +173,9 @@ DB_PASSWORD=your_secure_password
 DB_NAME=password_vault
 
 # Admin User (created during first migration)
-ADMIN_DEFAULT_USERNAME=admin
+ADMIN_DEFAULT_USERNAME=your_admin_username
 ADMIN_DEFAULT_PASSWORD=your_secure_admin_password_here
-ADMIN_DEFAULT_EMAIL=admin@yourdomain.com
+ADMIN_DEFAULT_EMAIL=your_admin@yourdomain.com
 
 # Encryption Key (generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
 ENCRYPTION_KEY=your_generated_64_char_hex_key_here

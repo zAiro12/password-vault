@@ -120,9 +120,9 @@ ENCRYPTION_KEY=<la-tua-chiave-generata-64-char>  # Marca come "secret"
 #### 4. Admin User
 
 ```
-ADMIN_DEFAULT_USERNAME=admin
+ADMIN_DEFAULT_USERNAME=lucaairoldi
 ADMIN_DEFAULT_PASSWORD=<password-sicura>  # Marca come "secret"
-ADMIN_DEFAULT_EMAIL=admin@tuaazienda.com
+ADMIN_DEFAULT_EMAIL=lucaairoldi92@gmail.com
 ```
 
 ### 📝 Lista Completa Environment Variables
@@ -140,9 +140,9 @@ DB_NAME=password_vault
 JWT_SECRET=<generato-con-openssl>
 ENCRYPTION_KEY=<generato-con-node-64-char-hex>
 
-ADMIN_DEFAULT_USERNAME=admin
+ADMIN_DEFAULT_USERNAME=lucaairoldi
 ADMIN_DEFAULT_PASSWORD=<password-sicura>
-ADMIN_DEFAULT_EMAIL=admin@tuaazienda.com
+ADMIN_DEFAULT_EMAIL=lucaairoldi92@gmail.com
 ```
 
 ## 🗄️ Opzioni per il Database MySQL

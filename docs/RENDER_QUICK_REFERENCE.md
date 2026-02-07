@@ -45,9 +45,9 @@ JWT_SECRET=<generato>         # Marca come "secret"
 ENCRYPTION_KEY=<generato>     # Marca come "secret"
 
 # Admin
-ADMIN_DEFAULT_USERNAME=admin
+ADMIN_DEFAULT_USERNAME=lucaairoldi
 ADMIN_DEFAULT_PASSWORD=<password-sicura>  # Marca come "secret"
-ADMIN_DEFAULT_EMAIL=admin@example.com
+ADMIN_DEFAULT_EMAIL=lucaairoldi92@gmail.com
 
 # Node
 NODE_ENV=production

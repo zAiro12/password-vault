@@ -79,18 +79,10 @@ export const useAuthStore = defineStore('auth', {
 
       try {
         const response = await api.post('/api/auth/register', userData);
-        const { token, user } = response.data;
-
-        // Save to state
-        this.token = token;
-        this.user = user;
-        this.isAuthenticated = true;
-
-        // Save to localStorage
-        localStorage.setItem('auth_token', token);
-        localStorage.setItem('auth_user', JSON.stringify(user));
-
-        return { success: true };
+        
+        // Registration successful but user needs admin approval
+        // No token is returned, so don't set authentication state
+        return { success: true, message: response.data.message };
       } catch (error) {
         this.error = this._extractErrorMessage(error, 'Registration failed');
         return { success: false, error: this.error };

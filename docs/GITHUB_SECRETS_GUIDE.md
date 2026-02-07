@@ -52,9 +52,9 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 | Secret Name | Description | Default Value |
 |------------|-------------|---------------|
 | `DB_PORT` | Database port | `3306` |
-| `ADMIN_DEFAULT_USERNAME` | Initial admin username | `admin` |
+| `ADMIN_DEFAULT_USERNAME` | Initial admin username | `lucaairoldi` |
 | `ADMIN_DEFAULT_PASSWORD` | Initial admin password | (generate strong password) |
-| `ADMIN_DEFAULT_EMAIL` | Initial admin email | `admin@passwordvault.local` |
+| `ADMIN_DEFAULT_EMAIL` | Initial admin email | `lucaairoldi92@gmail.com` |
 
 ### Step 3: Verify GitHub Workflow Configuration
 

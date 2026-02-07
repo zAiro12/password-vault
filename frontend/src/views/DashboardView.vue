@@ -2,7 +2,16 @@
   <div class="dashboard-view">
     <header class="dashboard-header">
       <h1>Password Vault Dashboard</h1>
-      <button @click="handleLogout" class="btn-logout">Logout</button>
+      <div class="header-actions">
+        <button 
+          v-if="isAdmin" 
+          @click="goToUserManagement" 
+          class="btn-users"
+        >
+          User Management
+        </button>
+        <button @click="handleLogout" class="btn-logout">Logout</button>
+      </div>
     </header>
     
     <main class="dashboard-content">
@@ -35,7 +44,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 
@@ -48,9 +57,15 @@ const stats = ref({
   credentials: 0
 })
 
+const isAdmin = computed(() => authStore.userRole === 'admin')
+
 const handleLogout = async () => {
   await authStore.logout()
   router.push('/login')
+}
+
+const goToUserManagement = () => {
+  router.push('/users')
 }
 </script>
 
@@ -73,6 +88,27 @@ const handleLogout = async () => {
   margin: 0;
   color: #333;
   font-size: 1.5rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn-users {
+  padding: 0.5rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s;
+}
+
+.btn-users:hover {
+  transform: translateY(-2px);
 }
 
 .btn-logout {
