@@ -147,6 +147,25 @@ Migration file: `database/migrations/006_add_user_verification.sql`
 - [ ] Non-admin users cannot access user management endpoints
 - [ ] Non-admin users cannot access user management page
 
+## Future Improvements
+
+1. **Better UI Feedback**: Replace native `alert()` and `confirm()` dialogs with:
+   - Custom modal components with proper ARIA attributes
+   - Toast notification system for success/error messages
+   - Inline messages with screen reader support
+
+2. **Enhanced Security**:
+   - Email verification before account creation
+   - Password reset functionality
+   - Two-factor authentication
+   - Session management and token refresh
+
+3. **Admin Features**:
+   - Bulk user operations
+   - User activity logs
+   - Advanced filtering and search
+   - Export user lists
+
 ## API Examples
 
 ### Register a new user
