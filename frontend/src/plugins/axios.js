@@ -1,4 +1,5 @@
 import axios from 'axios';
+import router from '../router';
 
 // Create axios instance
 const api = axios.create({
@@ -46,8 +47,8 @@ api.interceptors.response.use(
       localStorage.removeItem('auth_user');
       
       // Redirect to login if not already there
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
+      if (router.currentRoute.value.path !== '/login') {
+        router.push('/login');
       }
     }
     
