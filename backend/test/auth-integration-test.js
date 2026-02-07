@@ -108,7 +108,7 @@ async function setupTestUser() {
   
   try {
     const [result] = await pool.execute(
-      'INSERT INTO users (username, email, password_hash, full_name, role, is_active) VALUES (?, ?, ?, ?, ?, true)',
+      'INSERT INTO users (username, email, password_hash, full_name, role, is_active, is_verified) VALUES (?, ?, ?, ?, ?, true, true)',
       [testUser.username, testUser.email, password_hash, testUser.full_name, testUser.role]
     );
     
