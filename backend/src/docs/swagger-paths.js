@@ -8,8 +8,8 @@ export const swaggerPaths = {
   '/api/auth/register': {
     post: {
       tags: ['Authentication'],
-      summary: 'Registrazione nuovo utente',
-      description: 'Crea un nuovo account utente nel sistema',
+      summary: 'Registrazione nuovo utente (richiede approvazione admin)',
+      description: 'Crea un nuovo account utente nel sistema. L\'utente deve essere approvato da un admin prima di poter effettuare il login. Solo ruoli technician e viewer sono consentiti per auto-registrazione.',
       requestBody: {
         required: true,
         content: {
@@ -38,8 +38,9 @@ export const swaggerPaths = {
                 },
                 role: {
                   type: 'string',
-                  enum: ['admin', 'technician', 'viewer'],
-                  default: 'technician'
+                  enum: ['technician', 'viewer'],
+                  default: 'technician',
+                  description: 'Solo technician e viewer sono consentiti. Admin può essere creato solo da altri admin.'
                 }
               }
             }
@@ -48,10 +49,10 @@ export const swaggerPaths = {
       },
       responses: {
         201: {
-          description: 'Utente creato con successo'
+          description: 'Utente creato con successo (in attesa di approvazione)'
         },
         400: {
-          description: 'Dati non validi'
+          description: 'Dati non validi o ruolo non consentito'
         },
         409: {
           description: 'Username o email già esistenti'
@@ -781,6 +782,255 @@ export const swaggerPaths = {
       responses: {
         200: {
           description: 'Dati della voce audit log'
+        }
+      }
+    }
+  },
+
+  // ==================== USER MANAGEMENT ENDPOINTS ====================
+  '/api/users/pending': {
+    get: {
+      tags: ['User Management'],
+      summary: 'Lista utenti in attesa di approvazione (solo admin)',
+      description: 'Ottiene l\'elenco di tutti gli utenti che hanno registrato un account ma non sono ancora stati approvati da un admin',
+      security: [{ bearerAuth: [] }],
+      responses: {
+        200: {
+          description: 'Lista utenti in attesa'
+        },
+        401: {
+          description: 'Non autenticato'
+        },
+        403: {
+          description: 'Accesso negato - richiede ruolo admin'
+        }
+      }
+    }
+  },
+
+  '/api/users': {
+    get: {
+      tags: ['User Management'],
+      summary: 'Lista tutti gli utenti (solo admin)',
+      description: 'Ottiene l\'elenco completo di tutti gli utenti del sistema con il loro stato',
+      security: [{ bearerAuth: [] }],
+      responses: {
+        200: {
+          description: 'Lista di tutti gli utenti'
+        },
+        401: {
+          description: 'Non autenticato'
+        },
+        403: {
+          description: 'Accesso negato - richiede ruolo admin'
+        }
+      }
+    },
+    post: {
+      tags: ['User Management'],
+      summary: 'Crea un nuovo utente (solo admin)',
+      description: 'Permette a un admin di creare un nuovo utente direttamente. L\'utente creato è automaticamente attivo e verificato.',
+      security: [{ bearerAuth: [] }],
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              required: ['username', 'email', 'password'],
+              properties: {
+                username: {
+                  type: 'string',
+                  example: 'nuovo.utente'
+                },
+                email: {
+                  type: 'string',
+                  format: 'email',
+                  example: 'nuovo@example.com'
+                },
+                password: {
+                  type: 'string',
+                  format: 'password',
+                  example: 'SecureP@ss123!'
+                },
+                full_name: {
+                  type: 'string',
+                  example: 'Nuovo Utente'
+                },
+                role: {
+                  type: 'string',
+                  enum: ['admin', 'technician', 'viewer'],
+                  default: 'technician',
+                  description: 'Admin può creare utenti con qualsiasi ruolo, incluso admin'
+                }
+              }
+            }
+          }
+        }
+      },
+      responses: {
+        201: {
+          description: 'Utente creato con successo'
+        },
+        400: {
+          description: 'Dati non validi'
+        },
+        401: {
+          description: 'Non autenticato'
+        },
+        403: {
+          description: 'Accesso negato - richiede ruolo admin'
+        },
+        409: {
+          description: 'Username o email già esistenti'
+        }
+      }
+    }
+  },
+
+  '/api/users/{id}/approve': {
+    put: {
+      tags: ['User Management'],
+      summary: 'Approva un utente in attesa (solo admin)',
+      description: 'Approva un utente in attesa, impostando is_active=true e is_verified=true. L\'utente può quindi effettuare il login.',
+      security: [{ bearerAuth: [] }],
+      parameters: [
+        {
+          in: 'path',
+          name: 'id',
+          required: true,
+          schema: {
+            type: 'integer'
+          },
+          description: 'ID dell\'utente da approvare'
+        }
+      ],
+      responses: {
+        200: {
+          description: 'Utente approvato con successo'
+        },
+        400: {
+          description: 'Utente già approvato'
+        },
+        401: {
+          description: 'Non autenticato'
+        },
+        403: {
+          description: 'Accesso negato - richiede ruolo admin'
+        },
+        404: {
+          description: 'Utente non trovato'
+        }
+      }
+    }
+  },
+
+  '/api/users/{id}/reject': {
+    delete: {
+      tags: ['User Management'],
+      summary: 'Rifiuta ed elimina un utente in attesa (solo admin)',
+      description: 'Rifiuta una richiesta di registrazione ed elimina l\'utente dal sistema. Funziona solo con utenti non ancora verificati.',
+      security: [{ bearerAuth: [] }],
+      parameters: [
+        {
+          in: 'path',
+          name: 'id',
+          required: true,
+          schema: {
+            type: 'integer'
+          },
+          description: 'ID dell\'utente da rifiutare'
+        }
+      ],
+      responses: {
+        200: {
+          description: 'Utente rifiutato ed eliminato con successo'
+        },
+        400: {
+          description: 'Non è possibile rifiutare un utente già approvato'
+        },
+        401: {
+          description: 'Non autenticato'
+        },
+        403: {
+          description: 'Accesso negato - richiede ruolo admin'
+        },
+        404: {
+          description: 'Utente non trovato'
+        }
+      }
+    }
+  },
+
+  '/api/users/{id}/deactivate': {
+    put: {
+      tags: ['User Management'],
+      summary: 'Disattiva un utente (solo admin)',
+      description: 'Disattiva un utente attivo. L\'utente non potrà più effettuare il login. Non è possibile disattivare se stessi.',
+      security: [{ bearerAuth: [] }],
+      parameters: [
+        {
+          in: 'path',
+          name: 'id',
+          required: true,
+          schema: {
+            type: 'integer'
+          },
+          description: 'ID dell\'utente da disattivare'
+        }
+      ],
+      responses: {
+        200: {
+          description: 'Utente disattivato con successo'
+        },
+        400: {
+          description: 'Utente già inattivo o tentativo di disattivare se stesso'
+        },
+        401: {
+          description: 'Non autenticato'
+        },
+        403: {
+          description: 'Accesso negato - richiede ruolo admin'
+        },
+        404: {
+          description: 'Utente non trovato'
+        }
+      }
+    }
+  },
+
+  '/api/users/{id}/reactivate': {
+    put: {
+      tags: ['User Management'],
+      summary: 'Riattiva un utente disattivato (solo admin)',
+      description: 'Riattiva un utente precedentemente disattivato. L\'utente deve essere già verificato.',
+      security: [{ bearerAuth: [] }],
+      parameters: [
+        {
+          in: 'path',
+          name: 'id',
+          required: true,
+          schema: {
+            type: 'integer'
+          },
+          description: 'ID dell\'utente da riattivare'
+        }
+      ],
+      responses: {
+        200: {
+          description: 'Utente riattivato con successo'
+        },
+        400: {
+          description: 'Utente già attivo o non verificato'
+        },
+        401: {
+          description: 'Non autenticato'
+        },
+        403: {
+          description: 'Accesso negato - richiede ruolo admin'
+        },
+        404: {
+          description: 'Utente non trovato'
         }
       }
     }
