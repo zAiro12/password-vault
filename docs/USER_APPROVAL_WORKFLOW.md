@@ -155,6 +155,7 @@ Migration file: `database/migrations/006_add_user_verification.sql`
    - Inline messages with screen reader support
 
 2. **Enhanced Security**:
+   - **Rate Limiting**: Add rate limiting middleware to all API endpoints (including user management) to prevent brute force attacks
    - Email verification before account creation
    - Password reset functionality
    - Two-factor authentication
@@ -165,6 +166,20 @@ Migration file: `database/migrations/006_add_user_verification.sql`
    - User activity logs
    - Advanced filtering and search
    - Export user lists
+
+## Security Considerations
+
+### Current Implementation
+1. **Role Validation**: Self-registration only allows `technician` and `viewer` roles
+2. **Admin Protection**: Admins cannot deactivate themselves
+3. **Verified Status**: Both login and authentication middleware check `is_verified`
+4. **Authorization**: All user management endpoints require admin role
+5. **Audit Trail**: System tracks who approved each user and when
+
+### Recommended Enhancements
+1. **Rate Limiting**: The user management endpoints (like all API endpoints) should be protected with rate limiting middleware to prevent abuse. Consider implementing express-rate-limit or similar solutions across the entire API.
+2. **Email Verification**: Consider adding email verification as an additional step in the registration process.
+3. **Logging**: Add audit logging for all user management operations.
 
 ## API Examples
 
