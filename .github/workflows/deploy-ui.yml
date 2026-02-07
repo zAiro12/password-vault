@@ -60,7 +60,12 @@ jobs:
         run: npm ci
       
       - name: Build frontend
-        run: npm run build:frontend
+        run: |
+          npm run build:frontend
+          # Ensure .nojekyll exists to disable Jekyll processing
+          touch frontend/dist/.nojekyll
+          # Verify 404.html exists for SPA fallback
+          test -f frontend/dist/404.html || cp frontend/dist/index.html frontend/dist/404.html
         env:
           VITE_API_BASE_URL: https://password-vault-wqj8.onrender.com
       
