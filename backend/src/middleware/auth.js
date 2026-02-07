@@ -32,14 +32,14 @@ export async function authenticate(req, res, next) {
     
     // Get user from database
     const [users] = await pool.execute(
-      'SELECT id, username, email, full_name, role, is_active FROM users WHERE id = ? AND is_active = true',
+      'SELECT id, username, email, full_name, role, is_active, is_verified FROM users WHERE id = ? AND is_active = true AND is_verified = true',
       [decoded.userId]
     );
     
     if (users.length === 0) {
       return res.status(401).json({
         error: 'Authentication failed',
-        message: 'User not found or inactive'
+        message: 'User not found, inactive, or not verified'
       });
     }
     
