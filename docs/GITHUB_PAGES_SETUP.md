@@ -54,7 +54,7 @@ This PR includes the following technical improvements to ensure robust SPA routi
 ### How SPA Routing Works
 1. User visits `https://zairo12.github.io/password-vault/login`
 2. GitHub Pages doesn't find `/login` page, serves `404.html`
-3. `404.html` script redirects to `/?/login` (preserving the path as query parameter)
+3. `404.html` script redirects to `https://zairo12.github.io/password-vault/?/login` (preserving the path as query parameter)
 4. `index.html` loads, its script reads `/?/login` from URL
 5. Script updates browser history to show `/password-vault/login` (clean URL)
 6. Vue Router takes over and renders the Login component
