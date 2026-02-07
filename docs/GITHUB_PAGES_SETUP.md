@@ -9,6 +9,32 @@ This typically happens when:
 2. GitHub Pages is configured to deploy from a branch (like `main` or `gh-pages`) instead of using the GitHub Actions workflow, OR
 3. The "github-pages" environment doesn't exist or isn't properly configured
 
+## Deployment Workflows
+
+This repository has **two GitHub Actions workflows** for deploying to GitHub Pages:
+
+### 1. `deploy.yml` - Main Deployment Workflow
+- **File**: `.github/workflows/deploy.yml`
+- **Name**: "🚀 Deploy Password Vault"
+- **Trigger**: Push to `main` branch
+- **Method**: Uses `peaceiris/actions-gh-pages@v3`
+- **Features**: 
+  - Deploys both backend configuration and frontend
+  - ✅ Includes SPA routing support (.nojekyll and 404.html)
+  - Uses production environment variables
+
+### 2. `deploy-ui.yml` - UI-Only Deployment
+- **File**: `.github/workflows/deploy-ui.yml`
+- **Name**: "Deploy UI to GitHub Pages"
+- **Trigger**: Push to `main` branch or manual dispatch
+- **Method**: Uses `actions/deploy-pages@v4` (newer GitHub Pages API)
+- **Features**:
+  - Deploys frontend only
+  - ✅ Includes SPA routing support (.nojekyll and 404.html)
+  - Creates version tags automatically
+
+**Both workflows now include the necessary SPA routing fixes** to prevent 404 errors when accessing routes directly or refreshing the page.
+
 ## Solution
 
 ### Step 1: Verify GitHub Pages Source Setting
@@ -25,18 +51,52 @@ If the source is set to "Deploy from a branch":
 
 ### Step 3: Verify the Fix
 1. Go to the **Actions** tab
-2. You should see the "Deploy UI to GitHub Pages" workflow has run successfully
+2. You should see either "🚀 Deploy Password Vault" or "Deploy UI to GitHub Pages" workflow has run successfully
 3. Visit https://zairo12.github.io/password-vault/
 4. You should now see the Password Vault login page instead of the README
+
+### Step 4: Troubleshooting 404 Errors
+
+If you still see 404 errors after deployment:
+
+#### Common Issues and Solutions:
+
+1. **404 on Main Page (`/password-vault/`)**
+   - Check that GitHub Pages source is set to "GitHub Actions"
+   - Verify the workflow completed successfully
+   - Wait 2-3 minutes for GitHub CDN to update
+
+2. **404 on Routes (`/login`, `/dashboard`, etc.)**
+   - This was the main issue! Now fixed in both workflows
+   - Verify `.nojekyll` file exists in deployment
+   - Verify `404.html` file exists in deployment
+   - Check browser console for asset loading errors
+
+3. **404 on Assets (CSS, JS files)**
+   - Verify `NODE_ENV=production` is set during build
+   - Check that asset paths include `/password-vault/` prefix
+   - Clear browser cache and hard refresh (Ctrl+Shift+R)
+
+4. **How to Verify SPA Routing Works**:
+   ```
+   Test these URLs directly in your browser:
+   - https://zairo12.github.io/password-vault/login
+   - https://zairo12.github.io/password-vault/dashboard
+   - https://zairo12.github.io/password-vault/register
+   
+   All should load the app (not show 404 error page)
+   ```
 
 ## Technical Changes Made
 
 This PR includes the following technical improvements to ensure robust SPA routing:
 
-### 1. Workflow Updates (`.github/workflows/deploy-ui.yml`)
+### 1. Workflow Updates
+
+**Both workflows** (`.github/workflows/deploy.yml` and `.github/workflows/deploy-ui.yml`) now include:
 - ✅ Explicitly ensures `.nojekyll` file exists in `dist/` to prevent GitHub Pages from processing the site with Jekyll
 - ✅ Verifies `404.html` exists in `dist/` for SPA fallback routing (with fallback to copy from `index.html` if missing)
-- ✅ Uses `actions/deploy-pages@v4` for modern GitHub Pages deployment
+- ✅ Sets `NODE_ENV=production` to enable correct base path configuration
 
 ### 2. Vite Configuration (`frontend/vite.config.js`)
 - ✅ Sets `base: '/password-vault/'` in production mode
